@@ -6,5 +6,11 @@ project(test)
 #target wie Object
 # targets haben Properties, die kann man über Member Function verändern
 add_executable(test)
-target_sources(test PUBLIC main.cpp encoder.cpp preprocessing.cpp)
-target_compile_options(test PUBLIC -Ofast -std=c++20)
+
+target_sources(test PRIVATE 
+    src/main.cpp 
+    src/encoder.cpp 
+    src/preprocessing.cpp
+)
+target_include_directories(test PUBLIC include)
+target_compile_options(test PUBLIC -O3 -ffast-math -std=c++20)
