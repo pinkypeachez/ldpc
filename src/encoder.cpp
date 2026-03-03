@@ -7,7 +7,7 @@
 
 using namespace std;
 
-void compute_parity(int (&base)[ROWS][COLS], std::array<uint64_t,4> message, int8_t scale, std::array<uint64_t,4> &parity){
+void compute_parity(int8_t (&base)[ROWS][COLS], std::array<uint64_t,4> message, int8_t scale, std::array<uint64_t,4> &parity){
     
     for (int8_t j = 0; j < ROWS; j++) {
         uint64_t xor_sum = {};
