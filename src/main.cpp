@@ -21,18 +21,19 @@ int main() {
     std::mt19937 generator {seed};
     cout << " Seed für mt19937 Generator ist " << seed << endl;
 
-    cout << " Matrix wird gefüllt " << endl;
+    cout << " Base Matrix wird gefüllt " << endl;
 
     int8_t base[ROWS][COLS] = {};
 
     bool girthOk = false;
 
     while (!girthOk) {
+        std::cout << "Girth-4 Check NICHT bestanden, neuer Versuch..." << std::endl;
         fillMatrix(base, generator);
         girthOk = girthCheck(base);
     }
     
-    std::cout << "Base Matrix mit Girth-6 gefunden!" << std::endl;
+    std::cout << "Girth-4 Check bestanden!" << std::endl;
 
 
     // ------------------------------------------ ENCODER STAGE
@@ -43,7 +44,7 @@ int main() {
         0b0110110001010000011010100111001001101101011100000110110001110010
     };
     std::array<uint64_t,ROWS> parity= {};
-    int8_t scale = 64;
+    int8_t scale = 64; // KORREKTUR bitte als constexpr irgendo
 
 
     compute_parity(base, message, scale, parity);
@@ -54,7 +55,7 @@ int main() {
 
 
 
-// Message Bits & Parity Bits werden zusammengefügt
+// ----- Message Bits & Parity Bits werden zusammengefügt
     std::array<uint64_t, COLS> codeword;
     std::copy(message.begin(), message.end(), codeword.begin());
     std::copy(parity.begin(), parity.end(), codeword.begin() + (COLS-ROWS)); 
@@ -64,11 +65,29 @@ int main() {
         cout << std::bitset<64>(codeword[i]) << endl;
     }
 
-     // ------------------------------------------ I AM THE NOISY CHANNEL AND I WILL DESTROOOOY YOUR MESSAGE 
+    std::cout << "Codeword size: " << codeword.size() << std::endl;
+
+     // ------------------------------------------ NOISY CHANNEL 
+    // ADD NOISE
+    //binary_symmetric(codeword);
+    gaussian(codeword);
+//bzw GAUSSIAN
+
+
+
+/* // PLS EDIT!!!!!!!!!!!!!!!!!! zweck LLRs berechnen
+    // --------------------------- Compute Channel Reliabiliry
+    // Formel: 2 * Wurzel aus Ec/ sigma hoch 2
+    // Ec = a hoch 2
+    //     float ch_rel = (2.0f  * std::sqrt(a*a))/ (stddev*stddev); aber sqrt(a*a) = a
     
-    binary_symmetric(codeword);
-
-
+    float ch_rel = (2.0f  * a)/ (stddev*stddev);
+    
+    //LLR's
+    std::array<float, 10> llr = {};
+    for (int i=0; i < llr.size(); i++){
+        llr[i] = ch_rel * r[i];
+    } */
 
 /*     cout << " Ausgabe Matrix " << endl;
     for (uint8_t i = 0; i < 4; i++){

@@ -9,6 +9,6 @@
 
 // Signaturen 
 void binary_symmetric(std::array<uint64_t,COLS> &codeword);
-void gaussian();
+void gaussian(std::array<uint64_t, COLS> &codeword);
 
 #endif

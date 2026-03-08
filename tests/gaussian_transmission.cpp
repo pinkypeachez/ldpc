@@ -47,9 +47,9 @@ int main()
     std::default_random_engine generator;
     std::normal_distribution<float> distribution(0.0,stddev);
     
-    //std::array<float, 10> r = {}; // recieved vector
+    std::array<float, 10> r = {}; // recieved vector
     
-    std::array<float, 10> r = {-0.63, -0.83, -0.73, -0.04, 0.1, 0.95, -0.76, 0.66, -0.55, 0.58};
+    // test //std::array<float, 10> r = {-0.63, -0.83, -0.73, -0.04, 0.1, 0.95, -0.76, 0.66, -0.55, 0.58};
     
     for (int i = 0; i<t.size(); i++){
         
