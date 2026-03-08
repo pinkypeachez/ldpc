@@ -71,13 +71,16 @@ int main() {
     // ADD NOISE
     //binary_symmetric(codeword);
     std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
-    gaussian(codeword, r);
-//bzw GAUSSIAN
+    
+    float a = 1.0f; // Amplitude
+    float snr = 1.0f; // SNR Linear
+    float stddev = ComputeStdDev (a,snr);
+    std::cout << "STDDEV: " << stddev << std::endl;
+    GaussianNoise(codeword, r, stddev, a);
 
+    // --------------------------------------- VORBEREITUNG AUF DECODER: LLR BERECHNEN
 
-
-/* // PLS EDIT!!!!!!!!!!!!!!!!!! zweck LLRs berechnen
-    // --------------------------- Compute Channel Reliabiliry
+    // Compute Channel Reliabiliry
     // Formel: 2 * Wurzel aus Ec/ sigma hoch 2
     // Ec = a hoch 2
     //     float ch_rel = (2.0f  * std::sqrt(a*a))/ (stddev*stddev); aber sqrt(a*a) = a
@@ -85,10 +88,11 @@ int main() {
     float ch_rel = (2.0f  * a)/ (stddev*stddev);
     
     //LLR's
-    std::array<float, 10> llr = {};
+    std::array<float, COLS*SCALE> llr = {};
     for (int i=0; i < llr.size(); i++){
         llr[i] = ch_rel * r[i];
-    } */
+        //std::cout << llr[i] << std::endl;
+    } 
 
 /*     cout << " Ausgabe Matrix " << endl;
     for (uint8_t i = 0; i < 4; i++){

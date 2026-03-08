@@ -32,7 +32,7 @@ void binary_symmetric(std::array<uint64_t,COLS> &codeword){
 }
     
 // ======================================================================= GAUSSIAN 
-float ComputeStdDev(float a, uint8_t snr ){
+float ComputeStdDev(float a, float snr ){
     float code_rate = 0.5f; // KORREKTUR sollte sonst WOANDERS definiert werden!!!!!!!!!!!!!!!!!!!!
     
     float energy_per_coded_bit = a*a/ code_rate; //formel = a hoch 2 / code_rate
@@ -42,14 +42,16 @@ float ComputeStdDev(float a, uint8_t snr ){
     return stddev;
 }
   
-void gaussian(std::array<uint64_t, COLS> &codeword, std::array<float, COLS*SCALE> &r){
+void GaussianNoise(std::array<uint64_t, COLS> &codeword, 
+              std::array<float, COLS*SCALE> &r,
+              float stddev,
+              float a){
+
     cout << "Gaussian Noise Channel" << endl;
 
     // KORREKTUR auch Übergabewert? ist das nötig?
      // Gesucht werden: Standardabweichung fürs Modellieren des Rauschens
-    float a = 1.0f; // Amplitude
-    float snr = 1.0f; // SNR Linear
-    float stddev= ComputeStdDev (a,snr);
+    
 
      // ---------------------------------------  Map to a Signal VEctor
     std::array<float, COLS*SCALE> t = {}; // 512 Bit groß, flacher Vektor
@@ -58,9 +60,10 @@ void gaussian(std::array<uint64_t, COLS> &codeword, std::array<float, COLS*SCALE
     int count = 0;
     for (int i = 0; i<COLS; i++){
         //std::cout << bitset<64>(codeword[i]) << std::endl;
+      bitset<64> current_codeword = bitset<64>(codeword[i]);
       for (int j = 0; j < SCALE; j++){ // 512 - codeword groesse
-        (bitset<64>(codeword[i]))[j] == 0? t[SCALE*i+j]=-a : t[SCALE*i+j]=a; // KORREKTUR codeword indizes separat vorberechnen
-        //std::cout << count <<  " - codeword[i]" << (bitset<64>(codeword[i]))[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
+        current_codeword[j] == 0? t[SCALE*i+j]=-a : t[SCALE*i+j]=a; // KORREKTUR codeword indizes separat vorberechnen
+        //std::cout << count <<  " - codeword[i]" << (current_codeword)[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
         count++;
  
     }
@@ -77,7 +80,7 @@ void gaussian(std::array<uint64_t, COLS> &codeword, std::array<float, COLS*SCALE
     for (int i = 0; i<t.size(); i++){
         
         r[i] = t[i] + distribution(generator);
-        std::cout << t[i] << " " << r[i] << std::endl;
+        //std::cout << t[i] << " " << r[i] << std::endl;
     } 
 
     }

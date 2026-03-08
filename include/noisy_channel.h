@@ -10,6 +10,7 @@
 
 // Signaturen 
 void binary_symmetric(std::array<uint64_t,COLS> &codeword);
-void gaussian(std::array<uint64_t, COLS> &codeword, std::array<float, COLS*SCALE> &r);
+void GaussianNoise(std::array<uint64_t, COLS> &codeword, std::array<float, COLS*SCALE> &r, float stddev, float a);
+float ComputeStdDev(float a, float snr );
 
 #endif
