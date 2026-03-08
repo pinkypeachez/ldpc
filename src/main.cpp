@@ -70,7 +70,8 @@ int main() {
      // ------------------------------------------ NOISY CHANNEL 
     // ADD NOISE
     //binary_symmetric(codeword);
-    gaussian(codeword);
+    std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
+    gaussian(codeword, r);
 //bzw GAUSSIAN
 
 

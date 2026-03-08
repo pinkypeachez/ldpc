@@ -42,7 +42,7 @@ float ComputeStdDev(float a, uint8_t snr ){
     return stddev;
 }
   
-void gaussian(std::array<uint64_t, COLS> &codeword){
+void gaussian(std::array<uint64_t, COLS> &codeword, std::array<float, COLS*SCALE> &r){
     cout << "Gaussian Noise Channel" << endl;
 
     // KORREKTUR auch Übergabewert? ist das nötig?
@@ -53,13 +53,14 @@ void gaussian(std::array<uint64_t, COLS> &codeword){
 
      // ---------------------------------------  Map to a Signal VEctor
     std::array<float, COLS*SCALE> t = {}; // 512 Bit groß, flacher Vektor
-    std::cout << t.size() << "t Size " << std::endl;
+    //std::cout << t.size() << "Signal VEctor Size (gemappt) " << std::endl;
 
     int count = 0;
     for (int i = 0; i<COLS; i++){
+        //std::cout << bitset<64>(codeword[i]) << std::endl;
       for (int j = 0; j < SCALE; j++){ // 512 - codeword groesse
-        (bitset<64>(codeword[i]))[j] == 0? t[SCALE*i+j]=-a : t[SCALE*i+j]=a;
-        std::cout << count <<  " - codeword[i]" << (bitset<64>(codeword[i]))[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
+        (bitset<64>(codeword[i]))[j] == 0? t[SCALE*i+j]=-a : t[SCALE*i+j]=a; // KORREKTUR codeword indizes separat vorberechnen
+        //std::cout << count <<  " - codeword[i]" << (bitset<64>(codeword[i]))[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
         count++;
  
     }
@@ -67,16 +68,17 @@ void gaussian(std::array<uint64_t, COLS> &codeword){
 
     // ----------------------------------  Recieved signal (aka add gaussian noise to transmitted vector)
     // KORREKTUR generator welches Scope am besten?
-/*     static std::default_random_engine generator;
+    static std::default_random_engine generator;
     std::normal_distribution<float> distribution(0.0,stddev);
     
-    std::array<float, COLS> r = {}; // recieved vector
+    //std::array<float, COLS*SCALE> r = {}; // recieved vector
+    //std::cout << "Recieved Vector Size " << r.size() << std::endl;
     
     for (int i = 0; i<t.size(); i++){
         
         r[i] = t[i] + distribution(generator);
         std::cout << t[i] << " " << r[i] << std::endl;
-    } */
+    } 
 
     }
  
