@@ -30,14 +30,7 @@ int main()
     float a = 1.0f; // Amplitude
     float snr = 1.0f; // SNR Linear
     float stddev= ComputeStdDev (a,snr);
-    //std::cout << stddev << std::endl;
-    
-    //float code_rate = 0.5; // sollte sonst WOANDERS definiert werden
-    
-    //float energy_per_coded_bit = a*a/ code_rate; //formel a hoch 2 / code_rate
-    //float n_0 = energy_per_coded_bit / snr;
-    
-    //float stddev = n_0 / 2;
+
     
     // array Codeword z.B
     std::array<int, 10> codeword = {0,1,0,0,1,1,0,1,1,0};
@@ -64,13 +57,23 @@ int main()
         std::cout << t[i] << " " << r[i] << std::endl;
     }
     
-    // ------------------------------- Compute Channel Posterior Probability
-    std::array<float, 10> ch_post = {};
+    // --------------------------- Compute Channel Reliabiliry
+    // Formel: 2 * Wurzel aus Ec/ sigma hoch 2
+    // Ec = a hoch 2
+    //     float ch_rel = (2.0f  * std::sqrt(a*a))/ (stddev*stddev); aber sqrt(a*a) = a
+    float ch_rel = (2.0f  * a)/ (stddev*stddev);
     
-   
-    for (int i = 0; i<ch_post.size(); i++){
-        ch_post[i] = (1 / (1 + std::exp((-2*a*r[i])/(stddev*stddev))));
+    //LLR's
+    std::array<float, 10> llr = {};
+    for (int i=0; i < llr.size(); i++){
+        llr[i] = ch_rel * r[i];
     }
+    
+    // ------------------------------- Compute Channel Posterior Probability
+    //std::array<float, 10> ch_post = {};
+    //for (int i = 0; i<ch_post.size(); i++){
+    //    ch_post[i] = (1 / (1 + std::exp((-2*a*r[i])/(stddev*stddev))));
+    //}
 
   return 0;
 }

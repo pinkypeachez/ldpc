@@ -14,4 +14,4 @@ target_sources(test PRIVATE
     src/noisy_channel.cpp
 )
 target_include_directories(test PUBLIC include)
-target_compile_options(test PUBLIC -O3 -ffast-math -std=c++20)
+target_compile_options(test PUBLIC -O3 -ffast-math -march=native -std=c++20)
