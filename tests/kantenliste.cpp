@@ -4,6 +4,8 @@
 #include <iostream>
 
 
+
+
 int main()
 {
     constexpr uint8_t ROWS = 4;
@@ -20,23 +22,25 @@ int main()
     constexpr uint8_t SCALE = 10;
     
     std::vector <uint8_t> vec;
-    vec.reserve(COLS*SCALE); //IST DAS SINNVOL??????
-    std::cout << +vec.capacity() << std::endl; //check wie viel allociert wurde
+    vec.reserve(COLS*SCALE); // durch Dual Diagonal Form wird eig mehr als nötig allociert
+    //std::cout << +vec.capacity() << std::endl; //check wie viel allociert wurde
     
     
-    uint8_t h_row = 1/SCALE; // ansonsten statt 1 counter für rows
-    //std::cout << +h_row << std::endl;
-    
-    for (int col = 0; col < COLS; col++){
-
-        if (h[h_row][col] >= 0) {
-            int8_t index = h[h_row][col]+col*SCALE;
-            std::cout << +(h[h_row][col]) << std::endl;
-            vec.push_back(index);
-            std::cout << +(index) << std::endl;
+    for (int row = 0; row < ROWS; row++){
+        //std::cout << +h_row << std::endl;
+        
+        for (int col = 0; col < COLS; col++){
+            
+            if (h[row][col] >= 0) {
+                int8_t index = h[row][col]+col*SCALE;
+                std::cout << "Index in Base Matrix: " << +(h[row][col]) << std::endl;
+                vec.push_back(index);
+                std::cout << +(index) << std::endl;
+            }
         }
     }
     
+    std::cout << +vec.size() << std::endl;
     
 
 
