@@ -1,7 +1,6 @@
 // Small Test: Kantenliste
 
 #include <iostream>
-#include <iostream>
 
 constexpr uint8_t ROWS = 4;
 constexpr uint8_t COLS = 8;
