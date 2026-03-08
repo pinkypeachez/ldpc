@@ -38,7 +38,7 @@ int main()
     // ---------------------------------------  Map to a Signal VEctor
     std::array<float, 10> t = {};
     
-    for (int i = 0; i<codeword.size(); i++){
+    for (size_t i = 0; i<codeword.size(); i++){
         codeword[i] == 0? t[i]=-a : t[i]=a;
         //std::cout << t[i] << std::endl;
     }
@@ -51,7 +51,7 @@ int main()
     
     // test //std::array<float, 10> r = {-0.63, -0.83, -0.73, -0.04, 0.1, 0.95, -0.76, 0.66, -0.55, 0.58};
     
-    for (int i = 0; i<t.size(); i++){
+    for (size_t i = 0; i<t.size(); i++){
         
         r[i] = t[i] + distribution(generator);
         std::cout << t[i] << " " << r[i] << std::endl;
@@ -65,13 +65,13 @@ int main()
     
     //LLR's
     std::array<float, 10> llr = {};
-    for (int i=0; i < llr.size(); i++){
+    for (size_t i=0; i < llr.size(); i++){
         llr[i] = ch_rel * r[i];
     }
     
     // ------------------------------- Compute Channel Posterior Probability
     //std::array<float, 10> ch_post = {};
-    //for (int i = 0; i<ch_post.size(); i++){
+    //for (size_t i = 0; i<ch_post.size(); i++){
     //    ch_post[i] = (1 / (1 + std::exp((-2*a*r[i])/(stddev*stddev))));
     //}
 

@@ -9,9 +9,9 @@ using namespace std;
 
 void compute_parity(int8_t (&base)[ROWS][COLS], std::array<uint64_t,4> message, int8_t scale, std::array<uint64_t,4> &parity){
     
-    for (int8_t j = 0; j < ROWS; j++) {
+    for (size_t j = 0; j < ROWS; j++) {
         uint64_t xor_sum = {};
-        for (int8_t i = 0; i < (COLS-ROWS); i++){
+        for (size_t i = 0; i < (COLS-ROWS); i++){
             cout << " Rotate THIS  by " << +(base[j][i]) << ": "<< std::bitset<64>(message[i]) << endl;
             
             uint64_t  rotate = rotr(message[i], base[j][i]);

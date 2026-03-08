@@ -61,7 +61,7 @@ int main() {
     std::copy(parity.begin(), parity.end(), codeword.begin() + (COLS-ROWS)); 
 
 
-    for (int8_t i = 0; i < COLS; i++){
+    for (size_t i = 0; i < COLS; i++){
         cout << std::bitset<64>(codeword[i]) << endl;
     }
 
@@ -89,7 +89,7 @@ int main() {
     
     //LLR's
     std::array<float, COLS*SCALE> llr = {};
-    for (int i=0; i < llr.size(); i++){
+    for (size_t i=0; i < llr.size(); i++){
         llr[i] = ch_rel * r[i];
         //std::cout << llr[i] << std::endl;
     } 
