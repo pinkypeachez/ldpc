@@ -3,13 +3,16 @@
 
 #include "params.h" // LDPC Parameter
 
+#include <vector>   // für std::vector
+#include <cstdint>  // für uint8_t
+
 
 
 
 
 
 // Signaturen 
-
+void FillCNConnections(int8_t (&base) [params::ROWS][params::COLS], std::vector <size_t>& nodelist);
 
 
 #endif

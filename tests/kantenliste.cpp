@@ -6,15 +6,18 @@ constexpr uint8_t ROWS = 4;
 constexpr uint8_t COLS = 8;
 constexpr uint8_t SCALE = 10;
 
-void FillCNConnections(int (&h) [ROWS][COLS], std::vector <uint8_t>& vec){
+void FillCNConnections(int (&base) [ROWS][COLS], std::vector <uint8_t>& vec){
     for (int row = 0; row < ROWS; row++){
         
         for (int col = 0; col < COLS; col++){
             
-            if (h[row][col] >= 0) {
-                int8_t index = h[row][col]+col*SCALE;
-                //std::cout << "Index in Base Matrix: " << +(h[row][col]) << std::endl;
+            if (base[row][col] >= 0) {
+                // int8_t index = h[row][col]+col*SCALE; INT8_t IST UNGEEIGNET. BEI GRÖßEREN BASE MATRIX WERTEN KOMMT ES ZUM ÜBERLAUF
+                
+                int8_t index = base[row][col]+col*SCALE;
                 vec.push_back(index);
+                //Debugging
+                //std::cout << "Index in Base Matrix: " << +(h[row][col]) << std::endl;
                 //std::cout << +(index) << std::endl;
             }
         }

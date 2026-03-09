@@ -7,6 +7,7 @@
 #include "preprocessing.h"
 #include "encoder.h"
 #include "noisy_channel.h"
+#include "decoder.h"
 #include "params.h"
 
 using namespace std;
@@ -97,7 +98,13 @@ int main() {
 
 
     // ======================================= DECODER STAGE ==============================================
+    std::vector <size_t> nodelist;
+    nodelist.reserve(COLS*SCALE); // durch Dual Diagonal Form wird eig mehr als nötig allociert
 
+    FillCNConnections(base,nodelist);
+    
+    // ACHTUNG!!! Wegen Dual Diagonal Form hat 1. Check Node -1 weniger Verbindungen als der Rest
+    // in Decoder schleife berücksigtigen!
 
 
 
