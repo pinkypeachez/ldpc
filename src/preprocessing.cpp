@@ -4,6 +4,8 @@
 
 
 using namespace std;
+using namespace params;
+
 
 void fillMatrix (int8_t (&base)[ROWS][COLS], std::mt19937 &generator){
     std::uniform_int_distribution<int> distribution(0,63);

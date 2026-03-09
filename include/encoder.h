@@ -2,14 +2,19 @@
 #define ENCODER_H
 
 #include <cstdint>
-#include "preprocessing.h"
+#include <array> 
 
 
 
-constexpr uint8_t SCALE = 64;
+#include "params.h" // LDPC Parameter
+
+
+
+
+
 
 // Signaturen 
-void compute_parity(int8_t (&base)[ROWS][COLS], std::array<uint64_t,4> message, int8_t scale, std::array<uint64_t,4> &parity);
+void compute_parity(int8_t (&base)[params::ROWS][params::COLS], std::array<uint64_t,4> message, int8_t scale, std::array<uint64_t,4> &parity);
 
 
 #endif

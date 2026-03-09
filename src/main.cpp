@@ -7,8 +7,10 @@
 #include "preprocessing.h"
 #include "encoder.h"
 #include "noisy_channel.h"
+#include "params.h"
 
 using namespace std;
+using namespace params;
 
 
 int main() {
@@ -36,7 +38,7 @@ int main() {
     std::cout << "Girth-4 Check bestanden!" << std::endl;
 
 
-    // ------------------------------------------ ENCODER STAGE
+    // ======================================= ENCODER STAGE  ======================================= 
     std::array<uint64_t,ROWS> message= {
         0b0110110001010100011010100111001001101101011100000110110010110010,
         0b0110010001010001011010100111010001101101011100000110110011010010,
@@ -78,7 +80,7 @@ int main() {
     std::cout << "STDDEV: " << stddev << std::endl;
     GaussianNoise(codeword, r, stddev, a);
 
-    // --------------------------------------- VORBEREITUNG AUF DECODER: LLR BERECHNEN
+    // --------------------------------------- VORBEREITUNG AUF DECODER: LLR BERECHNEN, KANTENLISTE BERECHNEN
 
     // Compute Channel Reliabiliry
     // Formel: 2 * Wurzel aus Ec/ sigma hoch 2
@@ -93,6 +95,13 @@ int main() {
         llr[i] = ch_rel * r[i];
         //std::cout << llr[i] << std::endl;
     } 
+
+
+    // ======================================= DECODER STAGE ==============================================
+
+
+
+
 
 /*     cout << " Ausgabe Matrix " << endl;
     for (uint8_t i = 0; i < 4; i++){

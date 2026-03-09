@@ -4,11 +4,12 @@
 #include <cstdint>
 #include <random>
 
-constexpr uint8_t ROWS = 4;
-constexpr uint8_t COLS = 8;
+#include "params.h" // LDPC Parameter
+
+
 
 // Signaturen 
-void fillMatrix(int8_t (&base)[ROWS][COLS], std::mt19937 &generator);
-bool girthCheck(int8_t (&base)[ROWS][COLS]);
+void fillMatrix(int8_t (&base)[params::ROWS][params::COLS], std::mt19937 &generator);
+bool girthCheck(int8_t (&base)[params::ROWS][params::COLS]);
 
 #endif

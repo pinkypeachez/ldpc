@@ -1,11 +1,12 @@
 #include "noisy_channel.h"
-#include "encoder.h" // für SCALE const expt KORREKTUR ?
+//#include "encoder.h" // für SCALE const expt KORREKTUR ? LÖSCHEN
 
 // bernoulli_distribution
 #include <iostream>
 #include <random>
 
 using namespace std;
+using namespace params;
 
 // die Daten werden in 512-bit Batches verarbeitet
 
