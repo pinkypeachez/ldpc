@@ -46,10 +46,9 @@ int main() {
         0b0110110001010000011010100111001001101101011100000110110001110010
     };
     std::array<uint64_t,ROWS> parity= {};
-    int8_t scale = 64; // KORREKTUR bitte als constexpr irgendo
 
 
-    compute_parity(base, message, scale, parity);
+    compute_parity(base, message, parity);
 
 /*     for (int8_t i = 0; i < ROWS; i++){
         cout << std::bitset<64>(parity[i]) << endl;

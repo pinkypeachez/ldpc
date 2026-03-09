@@ -14,7 +14,7 @@
 
 
 // Signaturen 
-void compute_parity(int8_t (&base)[params::ROWS][params::COLS], std::array<uint64_t,4> message, int8_t scale, std::array<uint64_t,4> &parity);
+void compute_parity(int8_t (&base)[params::ROWS][params::COLS], std::array<uint64_t,4> message, std::array<uint64_t,4> &parity);
 
 
 #endif

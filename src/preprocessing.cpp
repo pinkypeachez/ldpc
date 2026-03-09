@@ -11,7 +11,7 @@ void fillMatrix (int8_t (&base)[ROWS][COLS], std::mt19937 &generator){
     std::uniform_int_distribution<int> distribution(0,63);
 
 
-  // HAT WAS MIT CODE RATE ZU TUN ABER ERSTMAL HARDCODED!!!!!!!!!!!
+  // HAT WAS MIT CODE RATE ZU TUN ABER ERSTMAL HARDCODED!!!!!!!!!!! KORREKTUR
     // für DUAL DIAGONAL FORM FÜLLEN
     for (size_t i = 0; i < ROWS; i++){
         for (size_t j = 4; j < COLS; j++) {
