@@ -1,6 +1,3 @@
-// Die Base Matrix wird erstellt, Girth-4 Check gemacht
-//
-
 #include <iostream>
 #include <random>
 
@@ -10,7 +7,6 @@
 #include "decoder.h"
 #include "params.h"
 
-using namespace std;
 using namespace params;
 
 
@@ -19,12 +15,12 @@ int main() {
     // Base Matrix wird erstellt, Girth-4 Check durchgeführt
 
     //  --- Initialisierung des Zufallszahlgenerators
-    random_device rd;
+    std::random_device rd;
     uint seed = rd();
     std::mt19937 generator {seed};
-    cout << " Seed für mt19937 Generator ist " << seed << endl;
+    std::cout << " Seed für mt19937 Generator ist " << seed << std::endl;
 
-    cout << " Base Matrix wird gefüllt " << endl;
+    std::cout << " Base Matrix wird gefüllt " << std::endl;
 
     int8_t base[ROWS][COLS] = {};
 
@@ -64,7 +60,7 @@ int main() {
 
 
     for (size_t i = 0; i < COLS; i++){
-        cout << std::bitset<64>(codeword[i]) << endl;
+        std::cout << std::bitset<64>(codeword[i]) << std::endl;
     }
 
     std::cout << "Codeword size: " << codeword.size() << std::endl;
