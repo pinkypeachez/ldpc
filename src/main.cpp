@@ -106,16 +106,20 @@ int main() {
     // ACHTUNG!!! Wegen Dual Diagonal Form hat 1. Check Node -1 weniger Verbindungen als der Rest
     // in Decoder schleife berücksigtigen!
 
+/* ==========================  TEST DECODER: CheckNode Update Step
+     Dafür das [0].Element, der LLR Werte nehmen, das quasi alle Verbindungen von CheckNode 0 beinhaltet
+    zum Testen des Vorzeichen-Checks + MinSuche */
+    
+    std::array<float, SCALE> test_llr; //= llr[0];
+
+     for (int i = 0; i < test_llr.size(); i++) {
+        test_llr[i] = llr[i];
+        //std::cout << +(test_llr[i]) << std::endl;
+    } 
 
 
-
-/*     cout << " Ausgabe Matrix " << endl;
-    for (uint8_t i = 0; i < 4; i++){
-        for (uint8_t j = 0; j < 8; j++) {
-            std::cout << +base[i][j] << std::endl;
-            
-        }
-    } */
+// egal ich übergebe den gesamten nodelist....
+    VorzeichenCheck(test_llr, nodelist);
 
 
 
