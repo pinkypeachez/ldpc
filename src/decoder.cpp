@@ -7,78 +7,80 @@
 
 using namespace params;
 
+
 // FillCNConnections: 
-// füllt nodelist-Array mit Indizes der VN-Nodes, die mit Check Nodes verbunden sind (Adjazenzliste)
-void FillCNConnections(int8_t (&base) [ROWS][COLS], std::vector <size_t>& nodelist){ //KORREKTUR?? wegen size_t?
-    for (size_t row = 0; row < ROWS; row++){
-        
+// Die Indizes der VNs die mit CNs verbunden sind werden ermittelt 
+// und in "neighbors"-Liste des CN-Structs gespeichert
+void FillCNConnections(int8_t base [ROWS][COLS], std::vector<CheckNode>& check_nodes){ 
+
+    for (size_t row = 0; row < ROWS; row++){     
         for (size_t col = 0; col < COLS; col++){
+            int shift = base[row][col];
+            //std::cout << "Shift Wert: " << +base[row][col] << std::endl;
             
-            if (base[row][col] >= 0) {
-                int index = base[row][col]+col*SCALE;
-                nodelist.push_back(index);
-                /* Debugging
+            if (shift >= 0) { // nur wenn eine Verbindung existiert.. (-1 Eintrag in BaseMatrix steht für "keine Connection")
+
+                for (size_t i = 0 ; i < SCALE; i++) {
+                    
+                    size_t cn_index = row * SCALE + i; 
+                    size_t vn_index = col * SCALE +((i + shift) % 64);
+                    
+                   // std::cout << "CN Index: " << cn_index << std::endl;
+                   // std::cout << "VN Index: " << vn_index << std::endl;
+
+
+                    check_nodes[cn_index].neighbors.push_back(vn_index);
+         /*        // Debugging
                 std::cout << "Index in Base Matrix: " << +(base[row][col]) << std::endl;
-                std::cout << +(index) << std::endl; */
+                std::cout << +(shift) << std::endl;  */
+            }
             }
         }
     }
     
 }
 
-//TODOs: Vorzeichen Check + 2 kleinste Einträge finden
-// Vorzeichen Check: + auf 0, - auf 1 mappen, xor'ren
-void VorzeichenCheck(std::array<float, SCALE> test_llr, std::vector <size_t> nodelist){
-    std::cout << "Hallo aus func bitches" << std::endl;
+
+void CheckNodeUpdate(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& check_nodes){
+    bool local_sign = false;
+
+    for (size_t cn = 0; cn < check_nodes.size(); cn++){
+        for (size_t n = 0; n < check_nodes[cn].neighbors.size(); n++){
+            int index = check_nodes[cn].neighbors[n];
+
+            // berechne globales Vorzeichen
+            std::cout << "LLR Wert ist: " << llr[index] << std::endl;
+            llr[index] < 0 ? local_sign = 1 : local_sign = 0; 
+            std::cout << llr[index] << " bekommt Vorzeichen " << local_sign << std::endl;
+            // scheisse .. indizierug bei LLR!!!!!! llr ist doch flach... KORREKTUR
+
+            check_nodes[cn].global_sign = check_nodes[cn].global_sign xor local_sign;
+            
+
+            // finde 2 kleinsten Werte 
+            if (check_nodes[cn].min1 <= check_nodes[cn].min2) {
+                //dann ist min1 kleinere Wert von beiden --> ersetze min2
+                if (std::abs(llr[index]) < check_nodes[cn].min2){
+                    check_nodes[cn].min2 = std::abs(llr[index]);
+                    //std::cout << std::abs(llr[index]) << " war kleiner als  " << check_nodes[cn].min2 << std::endl;
+                } }
+            else {
+                if (std::abs(llr[index]) < check_nodes[cn].min1){
+                    check_nodes[cn].min1 = std::abs(llr[index]);
+                }
+              }
+
+            
+    }
+    std::cout << "XOR Result: " << check_nodes[cn].global_sign <<  std::endl;
+    std::cout << "Min1: " << check_nodes[cn].min1 <<  std::endl;
+    std::cout << "Min2: " << check_nodes[cn].min2 <<  std::endl;
+
+
+
     
-    // PLAN:
-    // 1. VORZEICHEN CHECK:
-    //Nimm nur die Werte aus LLR Liste die mit diesem CheckNode verbunden sind
-    // Mappe positive Werte + auf 0, negative - auf 1 
-    // Xor're sie alle um Vorzeichen rauszukriegen
-
-    // 2. MIN SUCHE (2 kleinste Einträge) einfach manuell
-
-    // achso das 0.Element hat -1 Degree im Vegleich zu anderen Check Nodes!!!!
-    // 0.Element: Anzahl Message Bits (COLS-ROWS) + 1 
-    // ab 1.Element: Anzahl Message Bits (COLS-ROWS) + 2 
-    // int n_elements = (COLS-ROWS) + 1; 
-
-    //ENTWEDER HÄSSÖICH DIE ARRAY GRößE ODER LIEBER DYNAMISCHEN VECTOR??? KORREKTUR
-    std::array<float, (COLS-ROWS) + 1> llr_fuer_0; // hier werden indizes von LLR Werten gespeichern zu denen der Check Node verbindungen hat
-    bool xor_result = 0;
-    bool vorzeichen = 0; 
-
-// gleichzeitig rauskriegen zu welchen Nodes dieser Check Node Verbindungen hat + Vorzeichen berechnen
-    for (size_t i = 0; i < llr_fuer_0.size(); i++){
-        llr_fuer_0[i] = nodelist[i];
-
-        test_llr[i] < 0 ? vorzeichen = 1 : vorzeichen = 0; 
-        std::cout << "LLR Wert: " << test_llr[i] << " bekommt Vorzeichen " << vorzeichen << std::endl;
-
-        xor_result = xor_result xor vorzeichen;
-        std::cout << "XOR Result: " << xor_result <<  std::endl;
-
     }
-
-    // MIN SUCHE: 2 kleinste Elemente in je llr_fuer_0 
-    // und zwar speichern NICHT den Wert, sondern Index!
-    std::array<float, 2> two_mins = { std::numeric_limits<float>::max(), 
-                                      std::numeric_limits<float>::max() };
-    //two_mins = llr_fuer_0[0];
-    int index; //hier wird der Index von dem größeren Element der 2 kleinsten Elemente gespeichert
-    for (size_t i = 0; i < llr_fuer_0.size(); i++){
-        std::cout << "LLR Wert ist " << test_llr[llr_fuer_0[i]] << std::endl;
-        two_mins[0] <= two_mins[1] ? index = 1 : index = 0;
-        std::cout << two_mins[index] << " war <= " << two_mins[not(index)] << std::endl;
-        std::abs(test_llr[llr_fuer_0[i]]) < two_mins[index] ? two_mins[index] = std::abs(test_llr[llr_fuer_0[i]]) : two_mins[index] = two_mins[index]; // beim nicht erfüllen der bedingung teil ändern KORREKTUR
-
-    }
-
-    for (size_t i = 0; i < two_mins.size(); i++){
-        std::cout << two_mins[i] << std::endl;
-    }
-
+    
 
 
 

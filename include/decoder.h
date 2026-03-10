@@ -7,13 +7,29 @@
 #include <cstdint>  // für uint8_t
 
 
+struct CheckNode {
+    float min1 = std::numeric_limits<float>::max();
+    float min2 = std::numeric_limits<float>::max();
+    bool global_sign = false;
 
+
+    // Init: drin werden Indizes der VNs gespeichert, 
+    // die mit diesem CN verbunden sind
+    std::vector<size_t> neighbors;
+
+    // vor jeder iteration
+    void reset() {
+        min1 = std::numeric_limits<float>::max();
+        min2 = std::numeric_limits<float>::max();
+        global_sign = false;
+    }
+};
 
 
 
 // Signaturen 
-void FillCNConnections(int8_t (&base) [params::ROWS][params::COLS], std::vector <size_t>& nodelist);
-void VorzeichenCheck(std::array<float, params::SCALE> test_llr, std::vector <size_t> nodelist);
+void FillCNConnections(int8_t base [params::ROWS][params::COLS], std::vector<CheckNode>& check_nodes);
+void CheckNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes);
 
 
 #endif
