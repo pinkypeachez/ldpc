@@ -103,9 +103,15 @@ int main() {
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base,check_nodes);
     
-    // hier beginnt die Schleife
+    // hier wird die Schleife beginnen (ANZAHL ITERATIONEN WÄHLEN)
+    // ---- Check Node Update
     MinAndSign(llr, check_nodes);
-   //CheckNodeUpdate(llr, check_nodes);
+
+    // Die Nachricht die von CNs an VNs geschikt wird soll in einem
+    // #CN*LLRsize(bzw message size)-großen Array gespeichert werden
+    std::vector <float> cn2vn;
+    cn2vn.reserve(ROWS*SCALE*COLS); 
+    CheckNodeUpdate(llr, check_nodes, cn2vn);
 
 
 /*     // check

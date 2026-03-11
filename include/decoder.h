@@ -14,7 +14,8 @@ struct CheckNode {
 
     //pointer auf den kleinsten der 2 Minima
     // bzw wäre es nur den Index abzuspeichern smarter
-    int index_min = -1; 
+    int i_min1st = -1;
+    int i_min2nd = -1; 
 
 
     // Init: drin werden Indizes der VNs gespeichert, 
@@ -26,7 +27,8 @@ struct CheckNode {
         min1 = std::numeric_limits<float>::max();
         min2 = std::numeric_limits<float>::max();
         global_sign = false;
-        index_min = -1;
+        i_min1st = -1;
+        i_min2nd = -1;
 
     }
 };
@@ -36,6 +38,6 @@ struct CheckNode {
 // Signaturen 
 void FillCNConnections(int8_t base [params::ROWS][params::COLS], std::vector<CheckNode>& check_nodes);
 void MinAndSign(std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes);
-//void CheckNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes);
+void CheckNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes, std::vector <float>& cn2vn);
 
 #endif
