@@ -103,7 +103,10 @@ int main() {
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base,check_nodes);
     
-    CheckNodeUpdate(llr, check_nodes);
+    // hier beginnt die Schleife
+    MinAndSign(llr, check_nodes);
+   //CheckNodeUpdate(llr, check_nodes);
+
 
 /*     // check
     std::cout << "Check-Node 66 hat " << check_nodes[66].neighbors.size() 
