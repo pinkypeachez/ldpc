@@ -25,7 +25,8 @@ struct CheckNode {
     float min2 = std::numeric_limits<float>::max();
     bool global_sign = false;
 
-    // Indizes der 2 kleinsten Werte
+    // Indizes der 2 kleinsten Werte KORREKTUR? bzw wenn ich schon Minima Werte speichere,
+    //brauche ich nur das Index von dem allerkleinsten Element
     int i_min1st = -1;
     int i_min2nd = -1; 
 
@@ -47,6 +48,6 @@ struct CheckNode {
 // Signaturen 
 void FillCNConnections(int8_t base [params::ROWS][params::COLS], std::vector<CheckNode>& check_nodes);
 void MinAndSign(std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes);
-void CheckNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes, std::vector <float>& cn2vn);
+void CheckNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes);
 
 #endif

@@ -99,7 +99,7 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
 
 
 
-    void CheckNodeUpdate(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& check_nodes, std::vector<float>& cn2vn){  
+    void CheckNodeUpdate(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& check_nodes){  
     // Die Idee ist es, die Nachrichten zu aktualisieren, die von CN an VNs gesendet werden
     // Min * Sign (dabei wird das i-te VN bei der Berechnung ignoriert)
 
@@ -124,11 +124,11 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
 
             if (node.neighbors[vn] == node.i_min1st) {
                 // Wenn aktueller VN das absolute MIN entspricht, nehmen wir das 2. kleinste Element
-                smallestValue = llr[node.i_min2nd];
+                smallestValue = node.min2;
                 std::cout << "VN-" <<node.neighbors[vn] << " entspricht MIN am Index " << node.i_min1st << std::endl;
-                std::cout << "Als Min wird das 2.kleinste Minima genommen: " << llr[node.i_min2nd] << " am Index " << node.i_min2nd << std::endl;
+                std::cout << "Als Min wird das 2.kleinste Minima genommen: " << node.min2 << " am Index " << node.i_min2nd << std::endl;
             } else {
-                smallestValue = llr[node.i_min1st];
+                smallestValue = node.min1;
                 
             }
         
@@ -137,7 +137,7 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
             std::cout << "New LLR " << smallestValue << std::endl;
          //  positive Werte + auf 0, negative - auf 1   
 
-            //node.cn2vn[vn].push_back (smallestValue);
+            node.cn2vn[vn]= smallestValue;
 
         }
      }
