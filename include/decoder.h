@@ -51,5 +51,5 @@ void MinAndSign(std::array<float, params::COLS*params::SCALE>& llr, std::vector<
 void CheckNodeUpdate(const std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes);
 void VarNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, float ch_rel, const std::vector<CheckNode>& check_nodes);
 void HardDecision(const std::array<float, params::COLS*params::SCALE>& llr, std::array<int, params::COLS*params::SCALE>& calc_codeword);
-
+void CalcSyndrom();
 #endif
