@@ -8,19 +8,28 @@
 
 
 struct CheckNode {
+
+// speichertechnisch nicht die smarteste Lösung aber es passt
+    std::vector<size_t> neighbors;   // Indizes der VNs, die mit diesem CN verbunden sind
+    std::vector<float>  cn2vn; // Nachrichten die an die VNs geschickt werden
+
+    CheckNode() {
+        neighbors.reserve(params::COLS); 
+        cn2vn.reserve(params::COLS);
+    }
+
+    // KORREKTUR ??
+    // eigentlich müssen min1 und min2 nicht Teil des Structs sein, weil sie nur
+    // in der Schleife und nirgendwo sonst benutzt werden
     float min1 = std::numeric_limits<float>::max();
     float min2 = std::numeric_limits<float>::max();
     bool global_sign = false;
 
-    //pointer auf den kleinsten der 2 Minima
-    // bzw wäre es nur den Index abzuspeichern smarter
+    // Indizes der 2 kleinsten Werte
     int i_min1st = -1;
     int i_min2nd = -1; 
 
 
-    // Init: drin werden Indizes der VNs gespeichert, 
-    // die mit diesem CN verbunden sind
-    std::vector<size_t> neighbors;
 
     // vor jeder iteration
     void reset() {

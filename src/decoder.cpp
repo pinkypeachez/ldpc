@@ -30,6 +30,8 @@ void FillCNConnections(int8_t base [ROWS][COLS], std::vector<CheckNode>& check_n
 
 
                     check_nodes[cn_index].neighbors.push_back(vn_index);
+                    
+                    
          /*        // Debugging
                 std::cout << "Index in Base Matrix: " << +(base[row][col]) << std::endl;
                 std::cout << +(shift) << std::endl;  */
@@ -51,35 +53,30 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
             // berechne globales Vorzeichen
             //std::cout << "LLR Wert ist: " << llr[index] << std::endl;
 
-            //// Mappe positive Werte + auf 0, negative - auf 1 
+            // Mappe positive Werte + auf 0, negative - auf 1 
             llr[index] < 0 ? local_sign = 1 : local_sign = 0; 
             //std::cout << llr[index] << " bekommt Vorzeichen " << local_sign << std::endl;
 
             check_nodes[cn].global_sign = check_nodes[cn].global_sign xor local_sign;
             
 
-            // finde 2 kleinsten Werte 
-            if (std::abs(llr[index]) < check_nodes[cn].min1 and std::abs(llr[index]) < check_nodes[cn].min2){
-                if (check_nodes[cn].min1 <= check_nodes[cn].min2){
-                    check_nodes[cn].min2 = std::abs(llr[index]);
-                    
-                    
-                } else{
-                    check_nodes[cn].min1 = std::abs(llr[index]);
-                }
-                check_nodes[cn].i_min2nd = check_nodes[cn].i_min1st;
-                check_nodes[cn].i_min1st = index;
-                
-                
-            } else if (std::abs(llr[index]) < check_nodes[cn].min1 and std::abs(llr[index]) > check_nodes[cn].min2){
-                    check_nodes[cn].min1 = std::abs(llr[index]);
-                    check_nodes[cn].i_min2nd = index;
-                }
-            else if (std::abs(llr[index]) > check_nodes[cn].min1 and std::abs(llr[index]) < check_nodes[cn].min2){
-                    check_nodes[cn].min2 = std::abs(llr[index]);
-                    check_nodes[cn].i_min2nd = index;
+            // ------------------- finde 2 kleinsten Werte 
+               float llr_magn = std::abs(llr[index]);
 
-                }
+               if (llr_magn < check_nodes[cn].min1) {
+                //der alte 1.Min-Platz wird zum 2.Platz
+                check_nodes[cn].i_min2nd = check_nodes[cn].i_min1st;
+                check_nodes[cn].min2 = check_nodes[cn].min1;
+
+                // der LLR Wert wird zum 1.Min-Platz
+                check_nodes[cn].i_min1st = index;
+                check_nodes[cn].min1 = llr_magn;
+
+               } else if (llr_magn < check_nodes[cn].min2){
+                 check_nodes[cn].i_min2nd = index;
+                 check_nodes[cn].min2 = llr_magn;
+               }
+
             
 
              
@@ -105,27 +102,42 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
     void CheckNodeUpdate(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& check_nodes, std::vector<float>& cn2vn){  
     // Die Idee ist es, die Nachrichten zu aktualisieren, die von CN an VNs gesendet werden
     // Min * Sign (dabei wird das i-te VN bei der Berechnung ignoriert)
-     std::cout << "bla" << std::endl;
 
      bool sign = 0;
      float smallestValue = 0.0f;
-     for (size_t cn = 0; cn < ROWS*SCALE; cn++){
-        std::cout << "Check Node " << cn << std::endl;
-        std::cout << "Degree: " << check_nodes[cn].neighbors.size() << std::endl;
 
-        for (size_t vn = 0; vn < check_nodes[cn].neighbors.size(); vn++){
-            std::cout << "LLR Wert: " << llr[check_nodes[cn].neighbors[vn]] << std::endl;
+     for (size_t cn = 0; cn < check_nodes.size(); cn++){
+        auto& node = check_nodes[cn]; // node = alias für check_nodes[cn]
+        std::cout << "\n ========= Check Node " << cn << std::endl;
+        std::cout << "Degree: " << node.neighbors.size() << std::endl;
 
-            if (llr[check_nodes[cn].neighbors[vn]] < 0){
+        for (size_t vn = 0; vn < node.neighbors.size(); vn++){
+
+        if (llr[node.neighbors[vn]] < 0){
                 sign = 1;
             } else { sign = 0; }
-            std::cout << check_nodes[cn].global_sign << " xor " << sign << "( " << llr[check_nodes[cn].neighbors[vn]] << " ist ";
+            std::cout << node.global_sign << " xor " << sign << "(" << llr[node.neighbors[vn]] << ") ist ";
 
-            sign = check_nodes[cn].global_sign xor sign;
+            sign = node.global_sign xor sign;
             std::cout << sign << std::endl;
-            check_nodes[cn].neighbors[vn] = check_nodes[cn].i_min1st ? smallestValue = llr[check_nodes[cn].i_min2nd] :  smallestValue = llr[check_nodes[cn].i_min1st];
+
+
+            if (node.neighbors[vn] == node.i_min1st) {
+                // Wenn aktueller VN das absolute MIN entspricht, nehmen wir das 2. kleinste Element
+                smallestValue = llr[node.i_min2nd];
+                std::cout << "VN-" <<node.neighbors[vn] << " entspricht MIN am Index " << node.i_min1st << std::endl;
+                std::cout << "Als Min wird das 2.kleinste Minima genommen: " << llr[node.i_min2nd] << " am Index " << node.i_min2nd << std::endl;
+            } else {
+                smallestValue = llr[node.i_min1st];
+                
+            }
+        
             sign == 0 ? smallestValue = smallestValue : smallestValue = smallestValue * (-1);
+
+            std::cout << "New LLR " << smallestValue << std::endl;
          //  positive Werte + auf 0, negative - auf 1   
+
+            //node.cn2vn[vn].push_back (smallestValue);
 
         }
      }
