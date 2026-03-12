@@ -163,6 +163,16 @@ void VarNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, float ch_
   }
 }
 
+void HardDecision(const std::array<float, params::COLS*params::SCALE>& llr, std::array<int, params::COLS*params::SCALE>& calc_codeword){
+    // ohne & weil ich die LLR Werte nicht verändern will
+
+    for (size_t i = 0; i < llr.size(); i++){
+        llr[i] >= 0? calc_codeword[i] = 0 : calc_codeword[i] = 1;
+        //zur erinnerung:  positive Werte + auf 0, negative - auf 1 
+    }
+
+}
+
 
 
 

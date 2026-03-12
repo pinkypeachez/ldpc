@@ -104,13 +104,53 @@ int main() {
     FillCNConnections(base,check_nodes);
     
     // hier wird die Schleife beginnen (ANZAHL ITERATIONEN WÄHLEN)
-    // ---- Check Node Update
-    MinAndSign(llr, check_nodes);
-    CheckNodeUpdate(llr, check_nodes);
+    size_t iterate = 20;
+    std::array<int, COLS*SCALE> calc_codeword;
+    std::array<int,ROWS> syndrom = {};
+    bool parity_failed = false;
 
-    // ---- Variable Node Update
-    // LLR's std::array<float, COLS*SCALE> llr wird aktualisiert
-    VarNodeUpdate(llr, ch_rel, check_nodes);
+    for (size_t i = 0; i < iterate; i++) {
+        // ---- Check Node Update
+        MinAndSign(llr, check_nodes);
+        CheckNodeUpdate(llr, check_nodes);
+
+        // ---- Variable Node Update
+        // LLR's std::array<float, COLS*SCALE> llr wird aktualisiert
+        VarNodeUpdate(llr, ch_rel, check_nodes);
+
+        // CHECK OB DIE LÖSUNG SCHON GEFUNDEN
+        // Option1: Hard Decision
+        HardDecision (llr, calc_codeword);
+
+
+        for (size_t cn = 0; cn < llr.size(); cn++) {
+            for (size_t n = 0; n < check_nodes[cn].neighbors.size(); n++){
+                syndrom[cn] +=  calc_codeword[check_nodes[cn].neighbors[n]];
+                }
+                std::cout << syndrom[cn] << std::endl;
+                if (syndrom[cn] == 1) {
+                    std::cout << "Failed! " << std::endl;
+                    bool parity_failed = true;
+                }
+                    
+                
+            }
+
+        if (parity_failed == false) {
+            std::cout << "YAAAY! Bei Iteration " << i << std::endl;
+                    break;
+            }
+        
+
+      
+
+
+
+    }
+
+
+   
+
 
 
 
