@@ -99,7 +99,7 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
 
 
 
-    void CheckNodeUpdate(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& check_nodes){  
+    void CheckNodeUpdate(const std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& check_nodes){  
     // Die Idee ist es, die Nachrichten zu aktualisieren, die von CN an VNs gesendet werden
     // Min * Sign (dabei wird das i-te VN bei der Berechnung ignoriert)
 
@@ -143,6 +143,25 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
      }
 
     } 
+
+void VarNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, float ch_rel, const std::vector<CheckNode>& check_nodes){
+  std::array<float, params::COLS*params::SCALE> vn_sum = {};
+
+// die kompakte Form des cn2vn auf die volle Größe aufblasen
+// alle LLR Werte (pro VN) werden aufsummiert
+  for (size_t cn = 0; cn < check_nodes.size(); cn++){
+        auto& node = check_nodes[cn];
+       for (size_t n = 0; n < node.neighbors.size(); n++){
+        size_t i_vn = node.neighbors[n];
+        vn_sum[i_vn] += node.cn2vn[n];
+
+       } 
+    }
+
+  for (size_t vn = 0; vn < llr.size(); vn++) {
+    llr[vn] = llr[vn]*ch_rel + vn_sum[vn];
+  }
+}
 
 
 

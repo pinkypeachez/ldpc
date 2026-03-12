@@ -106,17 +106,18 @@ int main() {
     // hier wird die Schleife beginnen (ANZAHL ITERATIONEN WÄHLEN)
     // ---- Check Node Update
     MinAndSign(llr, check_nodes);
-
-    // Die Nachricht die von CNs an VNs geschikt wird soll in einem
-    // #CN*LLRsize(bzw message size)-großen Array gespeichert werden
-    //std::vector <float> cn2vn;
-    //cn2vn.reserve(ROWS*SCALE*COLS); 
     CheckNodeUpdate(llr, check_nodes);
 
-    std::cout << "TEST" << std::endl;
+    // ---- Variable Node Update
+    // LLR's std::array<float, COLS*SCALE> llr wird aktualisiert
+    VarNodeUpdate(llr, ch_rel, check_nodes);
+
+
+
+/*     std::cout << "TEST" << std::endl;
     for (size_t i = 0; i < check_nodes[1].cn2vn.capacity(); i++){
      std::cout << +check_nodes[1].cn2vn[i] << std::endl;
-    }
+    } */
 
 /*     // check
     std::cout << "Check-Node 66 hat " << check_nodes[66].neighbors.size() 
