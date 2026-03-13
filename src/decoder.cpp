@@ -43,44 +43,48 @@ void FillCNConnections(int8_t base [ROWS][COLS], std::vector<CheckNode>& check_n
 }
 
 // Vorbereitung auf CheckNodeUpdate Step eines Decoders
-void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& check_nodes){
+void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<CheckNode>& check_nodes){
     
     bool local_sign = false;
 
     for (size_t cn = 0; cn < check_nodes.size(); cn++){
-        check_nodes[cn].reset(); // WICHTIG!!!!!!!!
+        auto& node = check_nodes[cn];
+        node.reset(); //die minima werden auf float.max() gesetzt, global_sign auf false
+
         std::cout << " \n ===== Check Node " << cn << std::endl;
          
-        for (size_t n = 0; n < check_nodes[cn].neighbors.size(); n++){
+        for (size_t vn = 0; vn < node.neighbors.size(); vn++){
 
-            int index = check_nodes[cn].neighbors[n];
-            std::cout << llr[index] << std::endl;
+            int index = node.neighbors[vn];
+            std::cout << current_llr[index] << std::endl;
+            // CN bekommt die Nachricht AUSGENOMMEN der eigenen Wertes (um sich selbst nicht zu bestätigen)
+            float message_to_cn = current_llr[index] - node.cn2vn[vn];
 
             // berechne globales Vorzeichen
-            //std::cout << "LLR Wert ist: " << llr[index] << std::endl;
+            //std::cout << "LLR Wert ist: " << message_to_cn << std::endl;
 
             // Mappe positive Werte + auf 0, negative - auf 1 
-            llr[index] < 0 ? local_sign = 1 : local_sign = 0; 
-            //std::cout << llr[index] << " bekommt Vorzeichen " << local_sign << std::endl;
+            message_to_cn < 0 ? local_sign = 1 : local_sign = 0; 
+            //std::cout << message_to_cn << " bekommt Vorzeichen " << local_sign << std::endl;
 
-            check_nodes[cn].global_sign = check_nodes[cn].global_sign xor local_sign;
+            node.global_sign = node.global_sign xor local_sign;
             
 
             // ------------------- finde 2 kleinsten Werte 
-               float llr_magn = std::abs(llr[index]);
+               float llr_magn = std::abs(message_to_cn);
 
-               if (llr_magn < check_nodes[cn].min1) {
+               if (llr_magn < node.min1) {
                 //der alte 1.Min-Platz wird zum 2.Platz
-                check_nodes[cn].i_min2nd = check_nodes[cn].i_min1st;
-                check_nodes[cn].min2 = check_nodes[cn].min1;
+                node.i_min2nd = node.i_min1st;
+                node.min2 = node.min1;
 
                 // der LLR Wert wird zum 1.Min-Platz
-                check_nodes[cn].i_min1st = index;
-                check_nodes[cn].min1 = llr_magn;
+                node.i_min1st = index;
+                node.min1 = llr_magn;
 
-               } else if (llr_magn < check_nodes[cn].min2 and llr_magn > check_nodes[cn].min1){
-                 check_nodes[cn].i_min2nd = index;
-                 check_nodes[cn].min2 = llr_magn;
+               } else if (llr_magn < node.min2 and llr_magn > node.min1){
+                 node.i_min2nd = index;
+                 node.min2 = llr_magn;
                }
 
             
@@ -89,13 +93,13 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
 
     }
      // Debugging
-    std::cout << "XOR Result: " << check_nodes[cn].global_sign <<  std::endl;
-    std::cout << "Min1: " << check_nodes[cn].min1 << " index " << check_nodes[cn].i_min1st << std::endl;
-    std::cout << "Min2: " << check_nodes[cn].min2 << " index " << check_nodes[cn].i_min2nd <<  std::endl;
-    int i = check_nodes[cn].i_min1st;
-    int j = check_nodes[cn].i_min2nd;
-    std::cout << "GLOBALES MIN1: index " << check_nodes[cn].i_min1st << " Wert: " << llr[i] << std::endl;
-    std::cout << "GLOBALES MIN2: index " << check_nodes[cn].i_min2nd << " Wert: " << llr[j] << std::endl;
+    std::cout << "XOR Result: " << node.global_sign <<  std::endl;
+    std::cout << "Min1: " << node.min1 << " index " << node.i_min1st << std::endl;
+    std::cout << "Min2: " << node.min2 << " index " << node.i_min2nd <<  std::endl;
+    int i = node.i_min1st;
+    int j = node.i_min2nd;
+    std::cout << "GLOBALES MIN1: index " << node.i_min1st << " Wert: " << current_llr[i] << std::endl;
+    std::cout << "GLOBALES MIN2: index " << node.i_min2nd << " Wert: " << current_llr[j] << std::endl;
 
 
 
@@ -105,7 +109,7 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
 
 
 
-    void CheckNodeUpdate(const std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& check_nodes){  
+    void CheckNodeUpdate(const std::array<float, COLS*SCALE>& current_llr, std::vector<CheckNode>& check_nodes){  
     // Die Idee ist es, die Nachrichten zu aktualisieren, die von CN an VNs gesendet werden
     // Min * Sign (dabei wird das i-te VN bei der Berechnung ignoriert)
 
@@ -119,10 +123,10 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
 
         for (size_t vn = 0; vn < node.neighbors.size(); vn++){
 
-        if (llr[node.neighbors[vn]] < 0){
+        if (current_llr[node.neighbors[vn]] < 0){
                 sign = 1;
             } else { sign = 0; }
-            //std::cout << node.global_sign << " xor " << sign << "(" << llr[node.neighbors[vn]] << ") ist ";
+            //std::cout << node.global_sign << " xor " << sign << "(" << current_llr[node.neighbors[vn]] << ") ist ";
 
             sign = node.global_sign xor sign;
             //std::cout << sign << std::endl;
@@ -150,7 +154,7 @@ void MinAndSign(std::array<float, COLS*SCALE>& llr, std::vector<CheckNode>& chec
 
     } 
 
-void VarNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, float ch_rel, const std::vector<CheckNode>& check_nodes){
+void VarNodeUpdate(const std::array<float, params::COLS*params::SCALE>& llr, std::array<float, COLS*SCALE>& current_llr, const std::vector<CheckNode>& check_nodes){
   std::array<float, params::COLS*params::SCALE> vn_sum = {};
 
 // die kompakte Form des cn2vn auf die volle Größe aufblasen
@@ -165,15 +169,15 @@ void VarNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, float ch_
     }
 
   for (size_t vn = 0; vn < llr.size(); vn++) {
-    llr[vn] = llr[vn]*ch_rel + vn_sum[vn];
+    current_llr[vn] = llr[vn] + vn_sum[vn];
   }
 }
 
-void HardDecision(const std::array<float, params::COLS*params::SCALE>& llr, std::array<int, params::COLS*params::SCALE>& calc_codeword){
+void HardDecision(const std::array<float, params::COLS*params::SCALE>& current_llr, std::array<int, params::COLS*params::SCALE>& calc_codeword){
     // ohne & weil ich die LLR Werte nicht verändern will
 
-    for (size_t i = 0; i < llr.size(); i++){
-        llr[i] >= 0? calc_codeword[i] = 0 : calc_codeword[i] = 1;
+    for (size_t i = 0; i < current_llr.size(); i++){
+        current_llr[i] >= 0? calc_codeword[i] = 0 : calc_codeword[i] = 1;
         //zur erinnerung:  positive Werte + auf 0, negative - auf 1 
     }
 

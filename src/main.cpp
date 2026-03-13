@@ -91,7 +91,7 @@ int main() {
     // KORREKTUR bitte auch in params datei!!!!!!
 
     float a = 1.0f; // Amplitude
-    float snr = 1.0f; // SNR Linear
+    float snr = 5.0f; // SNR Linear
     float stddev = ComputeStdDev (a,snr);
     std::cout << "STDDEV: " << stddev << std::endl;
     GaussianNoise(codeword, r, stddev, a); 
@@ -107,22 +107,29 @@ int main() {
     float ch_rel = (2.0f  * a)/ (stddev*stddev);
 
     
-    //LLR's
+    //LLR's: initial
     std::array<float, COLS*SCALE> llr = {};
-    for (size_t i=0; i < llr.size(); i++){
+    for (size_t i=0; i < r.size(); i++){
         llr[i] = ch_rel * r[i];
         //std::cout << llr[i] << std::endl;
     } 
+    // LLR das während der Iteration verändert wird
+    std::array<float, COLS*SCALE> current_llr = llr;
+
+
+    
+
+
 
 
     // ======================================= DECODER STAGE ==============================================
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base,check_nodes);
     
-    size_t iterate = 2;
+    size_t iterate = 10;
     std::array<int, COLS*SCALE> calc_codeword = {};
     std::array<int,ROWS*SCALE> syndrom = {};
-    bool parity_failed = false;
+    bool parity_failed;
 
     for (size_t i = 0; i < iterate; i++) {
 
@@ -131,16 +138,16 @@ int main() {
         parity_failed = false;
         
         // ---- Check Node Update
-        MinAndSign(llr, check_nodes);
-        CheckNodeUpdate(llr, check_nodes);
+        MinAndSign(current_llr, check_nodes);
+        CheckNodeUpdate(current_llr, check_nodes);
 
         // ---- Variable Node Update
         // LLR's std::array<float, COLS*SCALE> llr wird aktualisiert
-        VarNodeUpdate(llr, ch_rel, check_nodes);
+        VarNodeUpdate(llr, current_llr, check_nodes);
 
         // CHECK OB DIE LÖSUNG SCHON GEFUNDEN
         // Option1: Hard Decision
-        HardDecision (llr, calc_codeword);
+        HardDecision (current_llr, calc_codeword);
 
         
         for (size_t cn = 0; cn < check_nodes.size(); cn++) {
@@ -151,7 +158,7 @@ int main() {
                 //std::cout << syndrom[cn];
                 }
             //std::cout << " " << std::endl;    
-            //std::cout << syndrom[cn] << std::endl;
+            std::cout << syndrom[cn] << std::endl;
             if (syndrom[cn] != 0) {
                     //std::cout << "Iteration # " << i << std::endl;
                     std::cout << "Failed! " << std::endl;

@@ -68,7 +68,7 @@ void GaussianNoise(std::array<uint64_t, COLS> &codeword,
         //std::cout << bitset<64>(codeword[i]) << std::endl;
       bitset<64> current_codeword = bitset<64>(codeword[i]);
       for (size_t j = 0; j < SCALE; j++){ // 512 - codeword groesse
-        current_codeword[j] == 0? t[SCALE*i+j]=-a : t[SCALE*i+j]=a; // KORREKTUR codeword indizes separat vorberechnen
+        current_codeword[j] == 0? t[SCALE*i+j]=a : t[SCALE*i+j]=-a; // KORREKTUR codeword indizes separat vorberechnen
         //std::cout << count <<  " - codeword[i]" << (current_codeword)[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
         count++;
  

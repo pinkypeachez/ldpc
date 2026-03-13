@@ -39,6 +39,8 @@ struct CheckNode {
         global_sign = false;
         i_min1st = -1;
         i_min2nd = -1;
+   
+
 
     }
 };
@@ -47,9 +49,9 @@ struct CheckNode {
 
 // Signaturen 
 void FillCNConnections(int8_t base [params::ROWS][params::COLS], std::vector<CheckNode>& check_nodes);
-void MinAndSign(std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes);
-void CheckNodeUpdate(const std::array<float, params::COLS*params::SCALE>& llr, std::vector<CheckNode>& check_nodes);
-void VarNodeUpdate(std::array<float, params::COLS*params::SCALE>& llr, float ch_rel, const std::vector<CheckNode>& check_nodes);
-void HardDecision(const std::array<float, params::COLS*params::SCALE>& llr, std::array<int, params::COLS*params::SCALE>& calc_codeword);
+void MinAndSign(const std::array<float, params::COLS*params::SCALE>& current_llr, std::vector<CheckNode>& check_nodes);
+void CheckNodeUpdate(const std::array<float, params::COLS*params::SCALE>& current_llr, std::vector<CheckNode>& check_nodes);
+void VarNodeUpdate(const std::array<float, params::COLS*params::SCALE>& llr, std::array<float, params::COLS*params::SCALE>& current_llr, const std::vector<CheckNode>& check_nodes);
+void HardDecision(const std::array<float, params::COLS*params::SCALE>& current_llr, std::array<int, params::COLS*params::SCALE>& calc_codeword);
 void CalcSyndrom();
 #endif
