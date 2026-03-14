@@ -89,12 +89,13 @@ int main() {
      */
     
     // KORREKTUR bitte auch in params datei!!!!!!
- 
+ // SNR wird meistens in dB angegeben
     float a = 1.0f; // Amplitude
-    float snr = 5.0f; // SNR Linear
-    float stddev = ComputeStdDev (a,snr);
+    float snr_db = 5.0f; // SNR in dB
+    float snr_linear = std::pow(10.0f, snr_db / 10.0f);
+    float stddev = ComputeStdDev (a,snr_linear);
     //  float stddev = 0.000000001f; test
-    std::cout << "STDDEV: " << stddev << std::endl;
+    //std::cout << "STDDEV: " << stddev << std::endl;
     GaussianNoise(codeword, r, stddev, a); 
 
 
@@ -110,13 +111,18 @@ int main() {
 
     
     //LLR's: initial
+    // Channel LLR: intrinsic term
     std::array<float, COLS*SCALE> llr = {};
     for (size_t i=0; i < r.size(); i++){
         llr[i] = ch_rel * r[i];
         //std::cout << llr[i] << std::endl;
     } 
-    // LLR das während der Iteration verändert wird
+
+    // LLR das während der Iteration verändert wird: extrinsic term
     std::array<float, COLS*SCALE> current_llr = llr;
+
+    std::vector<CheckNode> check_nodes(ROWS*SCALE);
+    FillCNConnections(base, check_nodes);
 
 
     
@@ -125,8 +131,6 @@ int main() {
 
 
     // ======================================= DECODER STAGE ==============================================
-    std::vector<CheckNode> check_nodes(ROWS*SCALE);
-    FillCNConnections(base,check_nodes);
     
     size_t iterate = 100;
     std::array<int, COLS*SCALE> calc_codeword = {};

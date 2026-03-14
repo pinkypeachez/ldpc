@@ -37,16 +37,25 @@ void binary_symmetric(std::array<uint64_t,COLS> &codeword, float noise_level, st
 }
     
 // ========================= GAUSSIAN ========================= 
-float ComputeStdDev(float a, float snr ){
-  // Gesucht werden: Standardabweichung fürs Modellieren des Rauschens
-    float code_rate = 0.5f; // KORREKTUR sollte sonst WOANDERS definiert werden!!!!!!!!!!!!!!!!!!!!
+float ComputeStdDev(float a, float snr_linear ){
+  // Gesucht wird: Standardabweichung fürs Modellieren des Rauschens
+    //float code_rate = 0.5f; // KORREKTUR sollte sonst WOANDERS definiert werden!!!!!!!!!!!!!!!!!!!!
+    float code_rate = static_cast<float>(COLS-ROWS)/static_cast<float>(COLS);
+
+    // Energy pro gesendeten Symbol (coded bit)
+    // Formel umstellen: ((-a)*(-a) + a*a) / 2 ----> 2*(a*a)/ 2 ----> a*a
+    float Es = a*a;
+
+    // Energy pro Message bit 
+    float Eb = Es/ code_rate; 
+
+    float n_0 = Eb / snr_linear;
     
-    float energy_per_coded_bit = a*a/ code_rate; //formel = a hoch 2 / code_rate
-    float n_0 = energy_per_coded_bit / snr;
-    
-    float stddev = std::sqrt(n_0 / 2);
+    float stddev = std::sqrt(n_0 / 2.0f);
     return stddev;
 }
+
+
   
 void GaussianNoise(const std::array<uint64_t, COLS> &codeword, 
               std::array<float, COLS*SCALE>& r,
@@ -62,9 +71,9 @@ void GaussianNoise(const std::array<uint64_t, COLS> &codeword,
     for (size_t i = 0; i<COLS; i++){
       bitset<64> current_codeword = bitset<64>(codeword[i]);
 
-      for (size_t j = 0; j < SCALE; j++){ 
+      for (size_t j = 0; j < 64; j++){ 
         bool bit = current_codeword[63 - j]; // Wegen Endianess
-        bit == 0 ? t[SCALE*i+j]=a : t[SCALE*i+j]=-a;
+        bit == 0 ? t[64*i+j]=a : t[64*i+j]=-a;
         //std::cout << count <<  " - codeword[i]" << (current_codeword)[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
       }
     }

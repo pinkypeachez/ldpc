@@ -48,7 +48,7 @@ struct CheckNode {
 
 
 // Signaturen 
-void FillCNConnections(int8_t base [params::ROWS][params::COLS], std::vector<CheckNode>& check_nodes);
+void FillCNConnections(const int8_t base [params::ROWS][params::COLS], std::vector<CheckNode>& check_nodes);
 void MinAndSign(const std::array<float, params::COLS*params::SCALE>& current_llr, std::vector<CheckNode>& check_nodes);
 void CheckNodeUpdate(const std::array<float, params::COLS*params::SCALE>& current_llr, std::vector<CheckNode>& check_nodes);
 void VarNodeUpdate(const std::array<float, params::COLS*params::SCALE>& llr, std::array<float, params::COLS*params::SCALE>& current_llr, const std::vector<CheckNode>& check_nodes);

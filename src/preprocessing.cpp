@@ -8,20 +8,23 @@ using namespace params;
 
 
 void fillMatrix (int8_t (&base)[ROWS][COLS], std::mt19937 &generator){
-    std::uniform_int_distribution<int> distribution(0,63);
+  // Es werden Shift Werte zwischen 0 und 63 (für SCALE = 64) verteilt
+    std::uniform_int_distribution<int> distribution(0,SCALE-1);
 
+    // Rechter Teil der Base Matrix (Dual Diagonal Form) wird gefüllt
+    for (size_t row = 0; row < ROWS; row++){
+      for (size_t col = ROWS; col < COLS; col++) {
 
-  // HAT WAS MIT CODE RATE ZU TUN ABER ERSTMAL HARDCODED!!!!!!!!!!! KORREKTUR
-    // für DUAL DIAGONAL FORM FÜLLEN
-    for (size_t i = 0; i < ROWS; i++){
-        for (size_t j = 4; j < COLS; j++) {
-            ((i == (j-4)) or (i == (j - 4 + 1))) ? base[i][j] = 0 : base[i][j] = -1;
-        }
+        if (row == (col - ROWS) || row == (col - ROWS + 1))
+            base[row][col] = 0;
+        else
+            base[row][col] = -1;
     }
+}
     
     //--- "A" TEIL DER BASE MATRIX MIT ZUFÄLLIGEN WERTEN FÜLLEN
-    for (size_t i = 0; i < 4; i++){
-        for (size_t j = 0; j < 4; j++) {
+    for (size_t i = 0; i < ROWS; i++){
+        for (size_t j = 0; j < COLS-ROWS; j++) {
             base[i][j] = distribution(generator);  
         }
     }

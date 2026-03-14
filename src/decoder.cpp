@@ -11,7 +11,7 @@ using namespace params;
 // FillCNConnections: 
 // Die Indizes der VNs die mit CNs verbunden sind werden ermittelt 
 // und in "neighbors"-Liste des CN-Structs gespeichert
-void FillCNConnections(int8_t base [ROWS][COLS], std::vector<CheckNode>& check_nodes){ 
+void FillCNConnections(const int8_t base [ROWS][COLS], std::vector<CheckNode>& check_nodes){ 
 
     for (size_t row = 0; row < ROWS; row++){     
         for (size_t col = 0; col < COLS; col++){
@@ -23,7 +23,8 @@ void FillCNConnections(int8_t base [ROWS][COLS], std::vector<CheckNode>& check_n
                 for (size_t i = 0 ; i < SCALE; i++) {
                     
                     size_t cn_index = row * SCALE + i; 
-                    size_t vn_index = col * SCALE +((i + shift) % 64);
+                    size_t vn_index = col * SCALE +((i + shift) % SCALE);
+           
                     
                    // std::cout << "CN Index: " << cn_index << std::endl;
                    // std::cout << "VN Index: " << vn_index << std::endl;
@@ -82,7 +83,7 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
                 node.i_min1st = index;
                 node.min1 = llr_magn;
 
-               } else if (llr_magn < node.min2 and llr_magn > node.min1){
+               } else if (llr_magn < node.min2){
                  node.i_min2nd = index;
                  node.min2 = llr_magn;
                }
