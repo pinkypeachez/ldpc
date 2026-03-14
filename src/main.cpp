@@ -11,10 +11,12 @@ using namespace params;
 
 
 int main() {
-    // ------------- PREPROCESSING STAGE
-    // Base Matrix wird erstellt, Girth-4 Check durchgeführt
+    // ======================================= PREPROCESSING STAGE ======================================= 
+    // 1. Base Matrix wird erstellt:
+    // Links (Message-Teil): wird mit zufälligen Shift Werden gefüllt - FillMessagePart
+    // Rehts (Parity-Teil): Dual Diagonal Form - FillParityPart
+    // 2. Girth-4 Check durchgeführt - girthCheck
 
-    //  --- Initialisierung des Zufallszahlgenerators
     std::random_device rd;
     uint seed = rd();
     std::mt19937 generator {seed};
