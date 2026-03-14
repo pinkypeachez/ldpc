@@ -76,6 +76,15 @@ int main() {
     std::copy(parity.begin(), parity.end(), codeword.begin() + (COLS-ROWS)); 
 
 
+   bool encoderOk = CheckCodeword(base, codeword);
+
+    if (encoderOk)
+       std::cout << "Encoder korrekt: H*c = 0" << std::endl;
+    else
+       std::cout << "FEHLER IM ENCODER" << std::endl;
+
+
+
      // ------------------------------------------ NOISY CHANNEL 
      std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
      

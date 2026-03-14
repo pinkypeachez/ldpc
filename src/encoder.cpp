@@ -14,8 +14,10 @@ void ComputeParity (const int8_t (&base)[ROWS][COLS], const std::array<uint64_t,
         uint64_t xor_sum = 0;
         for (size_t i = 0; i < (COLS - ROWS); i++)
         {
+            if (base[row][i] >= 0){
             uint64_t rotate = std::rotr(message[i], base[row][i]);
-            xor_sum ^= rotate;   // xor_sum = xor_sum xor rotate;    
+            xor_sum ^= rotate;   // xor_sum = xor_sum xor rotate;  
+            }  
         }
 
         // Accumulator (wegen Dual Diagonal Form von Base Matrix)
@@ -28,3 +30,28 @@ void ComputeParity (const int8_t (&base)[ROWS][COLS], const std::array<uint64_t,
 }
 
 
+// Check ob Encoder funktioniert
+bool CheckCodeword(const int8_t (&base)[ROWS][COLS], std::array<uint64_t, COLS> codeword){
+    for (size_t row = 0; row < ROWS; row++) {
+
+        uint64_t acc = 0;
+
+        for (size_t col = 0; col < COLS; col++) {
+
+            if (base[row][col] >= 0) {
+
+                uint64_t rotated =
+                    std::rotr(codeword[col], base[row][col]);
+
+                acc ^= rotated;
+            }
+        }
+
+        if (acc != 0) {
+            std::cout << "Problem bei Parity check failed in Row: " << row << std::endl;
+            return false;
+        }
+    }
+
+    return true;
+}
