@@ -39,15 +39,13 @@ void binary_symmetric(std::array<uint64_t,COLS> &codeword, float noise_level, st
 // ========================= GAUSSIAN ========================= 
 float ComputeStdDev(float a, float snr_linear ){
   // Gesucht wird: Standardabweichung fürs Modellieren des Rauschens
-    //float code_rate = 0.5f; // KORREKTUR sollte sonst WOANDERS definiert werden!!!!!!!!!!!!!!!!!!!!
-    float code_rate = static_cast<float>(COLS-ROWS)/static_cast<float>(COLS);
 
     // Energy pro gesendeten Symbol (coded bit)
     // Formel umstellen: ((-a)*(-a) + a*a) / 2 ----> 2*(a*a)/ 2 ----> a*a
     float Es = a*a;
 
     // Energy pro Message bit 
-    float Eb = Es/ code_rate; 
+    float Eb = Es/ CODE_RATE; 
 
     float n_0 = Eb / snr_linear;
     

@@ -48,7 +48,7 @@ bool girthCheck ( int8_t (&base) [ROWS][COLS]){
                 // ----- Modulo 64 via Bit-Maske !!!!!!!!
                 if (((base[i][j] - base[i+step_r][j]) + (base[i+step_r][j+step_c]-base[i][j+step_c])+64) % 64 == 0) {
                     cout << "Girth-4: " << +base[i][j] << " " << +base[i+step_r][j] << " " << +base[i+step_r][j+step_c] << " " << +base[i][j+step_c] << endl;
-                    return 0;
+                    return false;
                 }
             }
           }
@@ -57,6 +57,6 @@ bool girthCheck ( int8_t (&base) [ROWS][COLS]){
     }
 
 
-    return 1;
+    return true;
 
 };

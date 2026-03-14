@@ -48,7 +48,7 @@ bool CheckCodeword(const int8_t (&base)[ROWS][COLS], std::array<uint64_t, COLS> 
         }
 
         if (acc != 0) {
-            std::cout << "Problem bei Parity check failed in Row: " << row << std::endl;
+            std::cout << "Problem bei Parity Check in Row: " << row << std::endl;
             return false;
         }
     }

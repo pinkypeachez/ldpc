@@ -79,13 +79,13 @@ int main() {
    bool encoderOk = CheckCodeword(base, codeword);
 
     if (encoderOk)
-       std::cout << "Encoder korrekt: H*c = 0" << std::endl;
+       std::cout << "Encoder ist mathematisch korrekt (H*c = 0)" << std::endl;
     else
        std::cout << "FEHLER IM ENCODER" << std::endl;
 
 
 
-     // ------------------------------------------ NOISY CHANNEL 
+    // ======================================= NOISY CHANNEL 
      std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
      
 /*      // ---------- WENN BINARY SYMMETRIC
