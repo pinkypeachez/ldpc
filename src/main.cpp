@@ -57,7 +57,6 @@ int main() {
     };
     std::array<uint64_t,ROWS> parity= {};
 
-
     ComputeParity(base, message, parity);
 
 

@@ -6,24 +6,27 @@
 
 using namespace params;
 
-void ComputeParity (const int8_t (&base)[ROWS][COLS], const std::array<uint64_t, 4> &message, std::array<uint64_t, 4> &parity)
+void ComputeParity (const int8_t (&base)[ROWS][COLS], const std::array<uint64_t, (COLS-ROWS)> &message, std::array<uint64_t, ROWS> &parity)
 {
-    uint64_t xor_sum;
-    for (size_t j = 0; j < ROWS; j++)
+    uint64_t xor_sum = 0;
+    for (size_t row = 0; row < ROWS; row++) //für jeder CN:
     {
-        xor_sum = {};
         for (size_t i = 0; i < (COLS - ROWS); i++)
         {
-            uint64_t rotate = std::rotr(message[i], base[j][i]);
+            uint64_t rotate = std::rotr(message[i], base[row][i]);
             xor_sum ^= rotate;   // xor_sum = xor_sum xor rotate;    
         }
 
-        // Accumulator (Dual Diagonal Part of Base Matrix)
-        if (j > 0) //  0.Zeile wird übersprungen (nicht akkumuliert)
+        // Accumulator (wegen Dual Diagonal Form von Base Matrix)
+        if (row > 0) //  0.Zeile wird übersprungen (nicht akkumuliert)
         {
-            xor_sum ^= parity[j - 1];  // xor_sum xor parity[j - 1];
+            xor_sum ^= parity[row - 1];  // xor_sum xor parity[row - 1];
         }
-        parity[j] = xor_sum;
+        parity[row] = xor_sum;
     }
+}
+
+void CheckParity(const std::array<uint64_t, 4> &message, std::array<uint64_t, 4> &parity){
+
 }
 
