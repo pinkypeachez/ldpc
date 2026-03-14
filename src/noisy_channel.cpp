@@ -1,7 +1,6 @@
 #include "noisy_channel.h"
-//#include "encoder.h" // für SCALE const expt KORREKTUR ? LÖSCHEN
 
-// bernoulli_distribution
+// bernoulli_distribution (BSC) oder normal_distribution (Gaussian)
 #include <iostream>
 #include <random>
 
@@ -37,8 +36,9 @@ void binary_symmetric(std::array<uint64_t,COLS> &codeword, float noise_level, st
   } 
 }
     
-// ======================================================================= GAUSSIAN 
+// ========================= GAUSSIAN ========================= 
 float ComputeStdDev(float a, float snr ){
+  // Gesucht werden: Standardabweichung fürs Modellieren des Rauschens
     float code_rate = 0.5f; // KORREKTUR sollte sonst WOANDERS definiert werden!!!!!!!!!!!!!!!!!!!!
     
     float energy_per_coded_bit = a*a/ code_rate; //formel = a hoch 2 / code_rate
@@ -48,40 +48,31 @@ float ComputeStdDev(float a, float snr ){
     return stddev;
 }
   
-void GaussianNoise(std::array<uint64_t, COLS> &codeword, 
-              std::array<float, COLS*SCALE> &r,
-              float stddev,
-              float a){
+void GaussianNoise(const std::array<uint64_t, COLS> &codeword, 
+              std::array<float, COLS*SCALE>& r,
+              const float stddev,
+              const float a){
 
     cout << "Gaussian Noise Channel" << endl;
 
-    // KORREKTUR auch Übergabewert? ist das nötig?
-     // Gesucht werden: Standardabweichung fürs Modellieren des Rauschens
-    
-
-     // ---------------------------------------  Map to a Signal VEctor
+     // -----------------  "Map to a Signal VEctor"
+     // 0 wird auf a, 1 auf -a [Amplitude] gemappt
     std::array<float, COLS*SCALE> t = {}; // 512 Bit groß, flacher Vektor
-    //std::cout << t.size() << "Signal VEctor Size (gemappt) " << std::endl;
 
-    int count = 0;
     for (size_t i = 0; i<COLS; i++){
-        //std::cout << bitset<64>(codeword[i]) << std::endl;
       bitset<64> current_codeword = bitset<64>(codeword[i]);
-      for (size_t j = 0; j < SCALE; j++){ // 512 - codeword groesse
-        current_codeword[j] == 0? t[SCALE*i+j]=a : t[SCALE*i+j]=-a; // KORREKTUR codeword indizes separat vorberechnen
+
+      for (size_t j = 0; j < SCALE; j++){ 
+        bool bit = current_codeword[63 - j]; // Wegen Endianess
+        bit == 0 ? t[SCALE*i+j]=a : t[SCALE*i+j]=-a;
         //std::cout << count <<  " - codeword[i]" << (current_codeword)[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
-        count++;
- 
-    }
+      }
     }
 
-    // ----------------------------------  Recieved signal (aka add gaussian noise to transmitted vector)
+    // -----------------  Recieved signal (aka add gaussian noise to transmitted vector)
     // KORREKTUR generator welches Scope am besten?
     static std::default_random_engine generator;
     std::normal_distribution<float> distribution(0.0,stddev);
-    
-    //std::array<float, COLS*SCALE> r = {}; // recieved vector
-    //std::cout << "Recieved Vector Size " << r.size() << std::endl;
     
     for (size_t i = 0; i<t.size(); i++){
         

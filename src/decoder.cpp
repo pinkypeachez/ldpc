@@ -51,12 +51,12 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
         auto& node = check_nodes[cn];
         node.reset(); //die minima werden auf float.max() gesetzt, global_sign auf false
 
-        std::cout << " \n ===== Check Node " << cn << std::endl;
+        //std::cout << " \n ===== Check Node " << cn << std::endl;
          
         for (size_t vn = 0; vn < node.neighbors.size(); vn++){
 
             int index = node.neighbors[vn];
-            std::cout << current_llr[index] << std::endl;
+            //std::cout << current_llr[index] << std::endl;
             // CN bekommt die Nachricht AUSGENOMMEN der eigenen Wertes (um sich selbst nicht zu bestätigen)
             float message_to_cn = current_llr[index] - node.cn2vn[vn];
 
@@ -92,7 +92,7 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
              
 
     }
-     // Debugging
+/*      // Debugging
     std::cout << "XOR Result: " << node.global_sign <<  std::endl;
     std::cout << "Min1: " << node.min1 << " index " << node.i_min1st << std::endl;
     std::cout << "Min2: " << node.min2 << " index " << node.i_min2nd <<  std::endl;
@@ -101,7 +101,7 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
     std::cout << "GLOBALES MIN1: index " << node.i_min1st << " Wert: " << current_llr[i] << std::endl;
     std::cout << "GLOBALES MIN2: index " << node.i_min2nd << " Wert: " << current_llr[j] << std::endl;
 
-
+ */
 
     
     }

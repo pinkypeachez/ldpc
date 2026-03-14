@@ -45,7 +45,8 @@ int main() {
     std::array<uint64_t,ROWS> parity= {};
 
 
-    compute_parity(base, message, parity);
+    ComputeParity(base, message, parity);
+
 
 /*     for (int8_t i = 0; i < ROWS; i++){
         cout << std::bitset<64>(parity[i]) << endl;
@@ -55,21 +56,18 @@ int main() {
 
 // ----- Message Bits & Parity Bits werden zusammengefügt
     std::array<uint64_t, COLS> codeword;
+
     std::copy(message.begin(), message.end(), codeword.begin());
     std::copy(parity.begin(), parity.end(), codeword.begin() + (COLS-ROWS)); 
 
-
-    for (size_t i = 0; i < COLS; i++){
-        std::cout << std::bitset<64>(codeword[i]) << std::endl;
-    }
 
     std::cout << "Codeword size: " << codeword.size() << std::endl;
 
      // ------------------------------------------ NOISY CHANNEL 
      std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
      
-     // ---------- WENN BINARY SYMMETRIC
- /*   float noise_level = 0.01f;
+/*      // ---------- WENN BINARY SYMMETRIC
+   float noise_level = 0.01f;
 
     //FÜR DEBUGGING!!! Um Indizes von geflippten Bits zu kennen
     std::vector <int> flipped_bits;
@@ -78,10 +76,12 @@ int main() {
    
 
     // auf r-Vektor mappen -1 für  1, +1 für 0
+    std::bitset<64> bits;
     for (size_t i = 0; i < COLS; i++) {
-        std::bitset<64> bits(codeword[i]);
+        bits = codeword[i];
         for (size_t j = 0; j < 64; j++) {
-            r[i * 64 + j] = bits[j] ? -1.0f : 1.0f;
+            bits[j] == 1 ? r[i * 64 + j] = -1.0f: r[i * 64 + j] = 1.0f;
+            std::cout << r[i * 64 + j] << std::endl;
         }
     }
 
@@ -89,22 +89,24 @@ int main() {
      */
     
     // KORREKTUR bitte auch in params datei!!!!!!
-
+ 
     float a = 1.0f; // Amplitude
     float snr = 5.0f; // SNR Linear
     float stddev = ComputeStdDev (a,snr);
+    //  float stddev = 0.000000001f; test
     std::cout << "STDDEV: " << stddev << std::endl;
     GaussianNoise(codeword, r, stddev, a); 
 
+
     // --------------------------------------- VORBEREITUNG AUF DECODER: LLR BERECHNEN, KANTENLISTE BERECHNEN
 
-    // Compute Channel Reliabiliry
+    // Compute Channel Reliability
     // Formel: 2 * Wurzel aus Ec/ sigma hoch 2
     // Ec = a hoch 2
     //     float ch_rel = (2.0f  * std::sqrt(a*a))/ (stddev*stddev); aber sqrt(a*a) = a
     
     
-    float ch_rel = (2.0f  * a)/ (stddev*stddev);
+    float ch_rel = (2.0f  * a)/ (stddev*stddev); 
 
     
     //LLR's: initial
@@ -126,7 +128,7 @@ int main() {
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base,check_nodes);
     
-    size_t iterate = 10;
+    size_t iterate = 100;
     std::array<int, COLS*SCALE> calc_codeword = {};
     std::array<int,ROWS*SCALE> syndrom = {};
     bool parity_failed;
@@ -155,10 +157,12 @@ int main() {
            for (size_t n = 0; n < check_nodes[cn].neighbors.size(); n++){
             
                 syndrom[cn] =  syndrom[cn] xor calc_codeword[check_nodes[cn].neighbors[n]];
+
                 //std::cout << syndrom[cn];
+                //std::cout << calc_codeword[check_nodes[cn].neighbors[n]] << std::endl;
                 }
             //std::cout << " " << std::endl;    
-            std::cout << syndrom[cn] << std::endl;
+            //std::cout << syndrom[cn] << std::endl;
             if (syndrom[cn] != 0) {
                     //std::cout << "Iteration # " << i << std::endl;
                     std::cout << "Failed! " << std::endl;
@@ -172,14 +176,16 @@ int main() {
 
         if (parity_failed == false) {
             std::cout << "YAAAY! Bei Iteration " << i << std::endl;
+
+                for (size_t i = 0; i < calc_codeword.size(); i++){
+                    std::cout << +calc_codeword[i];
+                }               
                     break;
             } 
 
     }
 
-/*     for (size_t i = 0; i < syndrom.size(); i++){
-        std::cout << +syndrom[i];
-} */
+
 
 
    

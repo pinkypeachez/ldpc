@@ -12,8 +12,8 @@
 
 
 // Signaturen 
-void binary_symmetric(std::array<uint64_t,params::COLS> &codeword, float noise_level, std::vector <int>& flipped_bits);
-void GaussianNoise(std::array<uint64_t, params::COLS> &codeword, std::array<float, params::COLS*params::SCALE> &r, float stddev, float a);
+void binary_symmetric(std::array<uint64_t,params::COLS>& codeword, float noise_level, std::vector <int>& flipped_bits);
+void GaussianNoise(const std::array<uint64_t, params::COLS>& codeword, std::array<float, params::COLS*params::SCALE>& r, const float stddev, const float a);
 float ComputeStdDev(float a, float snr );
 
 #endif
