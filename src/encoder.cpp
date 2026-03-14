@@ -26,7 +26,4 @@ void ComputeParity (const int8_t (&base)[ROWS][COLS], const std::array<uint64_t,
     }
 }
 
-void CheckParity(const std::array<uint64_t, 4> &message, std::array<uint64_t, 4> &parity){
-
-}
 

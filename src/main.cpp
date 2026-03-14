@@ -47,6 +47,9 @@ int main() {
     } 
 
 
+ 
+
+
 
     // ======================================= ENCODER STAGE  ======================================= 
     std::array<uint64_t,ROWS> message= {
@@ -142,7 +145,7 @@ int main() {
 
     // ======================================= DECODER STAGE ==============================================
     
-    size_t iterate = 100;
+    size_t iterate = 2;
     std::array<int, COLS*SCALE> calc_codeword = {};
     std::array<int,ROWS*SCALE> syndrom = {};
     bool parity_failed;
