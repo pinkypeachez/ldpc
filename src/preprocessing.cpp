@@ -6,12 +6,9 @@
 using namespace std;
 using namespace params;
 
+void FillParityPart (int8_t (&base)[ROWS][COLS]){
 
-void fillMatrix (int8_t (&base)[ROWS][COLS], std::mt19937 &generator){
-  // Es werden Shift Werte zwischen 0 und 63 (für SCALE = 64) verteilt
-    std::uniform_int_distribution<int> distribution(0,SCALE-1);
-
-    // Rechter Teil der Base Matrix (Dual Diagonal Form) wird gefüllt
+// Rechter Teil der Base Matrix (Dual Diagonal Form) wird gefüllt
     for (size_t row = 0; row < ROWS; row++){
       for (size_t col = ROWS; col < COLS; col++) {
 
@@ -22,21 +19,18 @@ void fillMatrix (int8_t (&base)[ROWS][COLS], std::mt19937 &generator){
     }
 }
     
-    //--- "A" TEIL DER BASE MATRIX MIT ZUFÄLLIGEN WERTEN FÜLLEN
+};
+
+void FillMessagePart (int8_t (&base)[ROWS][COLS], std::mt19937 &generator){
+  // Linker Teil der Base Matrix (message bits) wird mit zufälligen Shift Werten gefüllt
+  // Es werden Shift Werte zwischen 0 und 63 (für SCALE = 64) verteilt
+    std::uniform_int_distribution<int> distribution(0,SCALE-1);
+
     for (size_t i = 0; i < ROWS; i++){
         for (size_t j = 0; j < COLS-ROWS; j++) {
             base[i][j] = distribution(generator);  
         }
     }
-
-    cout << " Ausgabe Matrix " << endl;
-    for (size_t i = 0; i < 4; i++){
-        cout << " " << endl;
-        for (size_t j = 0; j < 8; j++) {
-            std::cout << +base[i][j] << " ";
-            
-        }
-    }  
 };
 
 bool girthCheck ( int8_t (&base) [ROWS][COLS]){
@@ -53,7 +47,7 @@ bool girthCheck ( int8_t (&base) [ROWS][COLS]){
 
                 // ----- Modulo 64 via Bit-Maske !!!!!!!!
                 if (((base[i][j] - base[i+step_r][j]) + (base[i+step_r][j+step_c]-base[i][j+step_c])+64) % 64 == 0) {
-                    cout << " Check nicht bestanden. Girth-4: " << +base[i][j] << " " << +base[i+step_r][j] << " " << +base[i+step_r][j+step_c] << " " << +base[i][j+step_c] << endl;
+                    cout << "Girth-4: " << +base[i][j] << " " << +base[i+step_r][j] << " " << +base[i+step_r][j+step_c] << " " << +base[i][j+step_c] << endl;
                     return 0;
                 }
             }

@@ -23,16 +23,27 @@ int main() {
     std::cout << " Base Matrix wird gefüllt " << std::endl;
 
     int8_t base[ROWS][COLS] = {};
+    FillParityPart(base);
+    FillMessagePart(base,generator);
 
+    std::cout << "\n ======= Girth-4 Check wird durchgeführt..." << std::endl;
     bool girthOk = false;
 
     while (!girthOk) {
         std::cout << "Girth-4 Check NICHT bestanden, neuer Versuch..." << std::endl;
-        fillMatrix(base, generator);
+        FillMessagePart(base, generator);
         girthOk = girthCheck(base);
     }
-    
-    std::cout << "Girth-4 Check bestanden!" << std::endl;
+
+    std::cout << "\n\nGirth-4 Check bestanden!" << std::endl;
+    std::cout << "\n ======= Base Matrix ist: " << std::endl;
+    for (size_t i = 0; i < ROWS; i++){
+        std::cout << " " << std::endl;
+        for (size_t j = 0; j < COLS; j++) {
+            std::cout << +base[i][j] << " ";     
+        }
+    } 
+
 
 
     // ======================================= ENCODER STAGE  ======================================= 
@@ -60,8 +71,6 @@ int main() {
     std::copy(message.begin(), message.end(), codeword.begin());
     std::copy(parity.begin(), parity.end(), codeword.begin() + (COLS-ROWS)); 
 
-
-    std::cout << "Codeword size: " << codeword.size() << std::endl;
 
      // ------------------------------------------ NOISY CHANNEL 
      std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
