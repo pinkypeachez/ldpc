@@ -59,7 +59,7 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
             int index = node.neighbors[vn];
             //std::cout << current_llr[index] << std::endl;
             // CN bekommt die Nachricht AUSGENOMMEN der eigenen Wertes (um sich selbst nicht zu bestätigen)
-            float message_to_cn = current_llr[index] - node.cn2vn[vn];
+            float message_to_cn = current_llr[index] - node.cn2vn[index];
 
             // berechne globales Vorzeichen
             //std::cout << "LLR Wert ist: " << message_to_cn << std::endl;
@@ -72,7 +72,7 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
             
 
             // ------------------- finde 2 kleinsten Werte 
-               float llr_magn = std::abs(message_to_cn);
+               float llr_magn = std::abs(current_llr[index]);
 
                if (llr_magn < node.min1) {
                 //der alte 1.Min-Platz wird zum 2.Platz

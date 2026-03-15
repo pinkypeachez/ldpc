@@ -15,7 +15,8 @@ struct CheckNode {
 
     CheckNode() {
         neighbors.reserve(params::COLS); 
-        cn2vn.reserve(params::COLS);
+        //cn2vn.reserve(params::COLS);
+        cn2vn.assign(params::COLS * params::SCALE, 0.0f); // DIE LÖSUNG!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     // KORREKTUR ??

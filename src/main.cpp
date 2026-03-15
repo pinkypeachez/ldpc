@@ -183,7 +183,7 @@ int main() {
 
     // ======================================= DECODER STAGE ==============================================
     
-    size_t iterate = 2;
+    size_t iterate = 50;
     std::array<int, COLS*SCALE> calc_codeword = {};
     std::array<int,ROWS*SCALE> syndrom = {};
     bool parity_failed;
