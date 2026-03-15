@@ -32,7 +32,7 @@ void ComputeParity (const int8_t (&base)[ROWS][COLS], const std::array<uint64_t,
 
 
 // Check ob Encoder funktioniert
-bool CheckCodeword(const int8_t (&base)[ROWS][COLS], std::array<uint64_t, COLS> codeword){
+bool CheckCodeword(const int8_t (&base)[ROWS][COLS], const std::array<uint64_t, COLS>& codeword){
     for (size_t row = 0; row < ROWS; row++) {
 
         uint64_t acc = 0;

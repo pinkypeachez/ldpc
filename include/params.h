@@ -1,7 +1,5 @@
 // Parameter für LDPC 
-#ifndef PARAMS_H
-#define PARAMS_H
-
+#pragma once
 namespace params {
     inline constexpr int SCALE = 64; //mit einem anderen Scale wird es NICHT funktionieren
     inline constexpr int COLS  = 8;
@@ -9,4 +7,3 @@ namespace params {
     inline constexpr float CODE_RATE = static_cast<float>(COLS-ROWS)/static_cast<float>(COLS);
 }
 
-#endif

@@ -1,5 +1,7 @@
 #include <iostream>
 #include <random>
+#include <cmath> // fürs aufrunden
+#include <string> // um teile vom string zu nehmen
 
 #include "preprocessing.h"
 #include "encoder.h"
@@ -51,8 +53,43 @@ int main() {
 
 
 
-    // ======================================= ENCODER STAGE  ======================================= 
-    std::array<uint64_t,ROWS> message= {
+    // =============== TEST (statt mit dem hardcoded (inhaltlich sinnlosen) bit stream zu arbeiten, als Eingabe char-String nehmen)  ======================================= 
+
+    std::string input = "gaba baka kapapagergerg regergergerg regergergerg p";
+    std::cout << "Adresse " << &input << std::endl;
+    //std::cout << "Geben Sie die zu übertragende Nachricht ein: " << std::endl;
+    //std::cin >> input;
+    int capacity = input.capacity();
+    uint size = input.size();
+    std::cout << "Message size: " << input.capacity() << std::endl;
+    std::cout << "Message size: " << input.size() << std::endl;
+
+    //Wie viele "message" Blöcke sollen verarbeitet werden?
+    float n_batch = std::ceil(input.size()/(32.0f));
+    std::cout << n_batch << " Batches " << std::endl;
+
+    size_t rest = input.size() % 32; // wie viele Elemente sind im letzten Batch?
+
+    std::array<uint64_t,COLS-ROWS> new_m= {};
+
+// Fülle die Message Block mit den Werten
+
+/*     for (size_t batch = 0; batch < n_batch; batch++){
+     for (size_t i = 0; i < new_m.size(); i++){
+            if (i != n_batch) {
+                std::string bit64 = input.substr(8*i, 8*i+8);
+                new_m[i] = std::bitset<64>(bit64).to_ullong();
+                std::cout << std::bitset<64>(new_m[i]) <<std::endl;
+
+        } else {
+            std::cout << "sheeeet " << std::endl;
+        }
+
+    }
+    } */
+
+   // ======================================= ENCODER STAGE  ======================================= 
+    std::array<uint64_t,COLS-ROWS> message= {
         0b0110110001010100011010100111001001101101011101101110110010110010,
         0b0110110001010001011010100111010101101101011100000110110011010010,
         0b0100111001010010011010100111000011101111011101100110110011110010,
@@ -119,10 +156,10 @@ int main() {
     
     // KORREKTUR bitte auch in params datei!!!!!!
  // SNR wird meistens in dB angegeben
-    float a = 1.0f; // Amplitude
-    float snr_db = 5.0f; // SNR in dB
-    float snr_linear = std::pow(10.0f, snr_db / 10.0f);
-    float stddev = ComputeStdDev (a,snr_linear);
+    const float a = 1.0f; // Amplitude
+    const float snr_db = 5.0f; // SNR in dB
+    const float snr_linear = std::pow(10.0f, snr_db / 10.0f);
+    const float stddev = ComputeStdDev (a,snr_linear);
     //  float stddev = 0.000000001f; test
     std::cout << "STDDEV: " << stddev << std::endl;
     
