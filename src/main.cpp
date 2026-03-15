@@ -240,52 +240,5 @@ int main() {
 
     }
 
-
-
-
-   
-
-
-
-
-/*     std::cout << "TEST" << std::endl;
-    for (size_t i = 0; i < check_nodes[1].cn2vn.capacity(); i++){
-     std::cout << +check_nodes[1].cn2vn[i] << std::endl;
-    } */
-
-/*     // check
-    std::cout << "Check-Node 66 hat " << check_nodes[66].neighbors.size() 
-              << " Verbindungen" << std::endl;
-    for (size_t i = 0; i < check_nodes[66].neighbors.size() ; i++){
-        std::cout << check_nodes[66].neighbors[i] << std::endl;
-    }    */       
-
-    
-    // ACHTUNG!!! Wegen Dual Diagonal Form hat 1. Check Node -1 weniger Verbindungen als der Rest
-    // in Decoder schleife berücksigtigen!
-
-/* ==========================  TEST DECODER: CheckNode Update Step
-     Dafür das [0].Element, der LLR Werte nehmen, das quasi alle Verbindungen von CheckNode 0 beinhaltet
-    zum Testen des Vorzeichen-Checks + MinSuche */
-
-    // BITTE NICHT VERGESSEN size von test_llr von SCALE auf SCALE*COLS zu verändern!!!!
-    
-/*     std::array<float, SCALE> test_llr; //= llr[0];
-
-     for (int i = 0; i < test_llr.size(); i++) {
-        test_llr[i] = llr[i];
-        //std::cout << +(test_llr[i]) << std::endl;
-    }  */
-
-
-// egal ich übergebe den gesamten nodelist....
-    //CheckNodeUpdate(test_llr, nodelist);
-
-
-
-    
-
-    
-    
     return 0;
 }
