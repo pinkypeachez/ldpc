@@ -37,7 +37,7 @@ void binary_symmetric(std::array<uint64_t,COLS> &codeword, float noise_level, st
 }
     
 // ========================= GAUSSIAN ========================= 
-float ComputeStdDev(float a, float snr_linear ){
+float ComputeStdDev(const float a, const float snr_linear ){
   // Gesucht wird: Standardabweichung fürs Modellieren des Rauschens
 
     // Energy pro gesendeten Symbol (coded bit)
@@ -60,19 +60,19 @@ void GaussianNoise(const std::array<uint64_t, COLS> &codeword,
               const float stddev,
               const float a){
 
-    cout << "Gaussian Noise Channel" << endl;
 
      // -----------------  "Map to a Signal VEctor"
      // 0 wird auf a, 1 auf -a [Amplitude] gemappt
     std::array<float, COLS*SCALE> t = {}; // 512 Bit groß, flacher Vektor
 
-    for (size_t i = 0; i<COLS; i++){
-      bitset<64> current_codeword = bitset<64>(codeword[i]);
-
+    for (size_t i = 0; i<COLS; i++){ // es wäre i<codeword.size() besser KORREKTUR
+      std::bitset<64> current_codeword = std::bitset<64>(codeword[i]);
+      //std::cout << "i " << i << " : "<< bitset<64>(codeword[i]) << std::endl;
+    
       for (size_t j = 0; j < 64; j++){ 
-        bool bit = current_codeword[63 - j]; // Wegen Endianess
+        bool bit = current_codeword[j];
         bit == 0 ? t[64*i+j]=a : t[64*i+j]=-a;
-        //std::cout << count <<  " - codeword[i]" << (current_codeword)[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
+        //std::cout <<  " - codeword[i]" << (current_codeword)[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
       }
     }
 
@@ -84,7 +84,16 @@ void GaussianNoise(const std::array<uint64_t, COLS> &codeword,
     for (size_t i = 0; i<t.size(); i++){
         
         r[i] = t[i] + distribution(generator);
-        //std::cout << t[i] << " " << r[i] << std::endl;
+        //std::cout << "t " << t[i] << " --> " << r[i] << std::endl;
+
+/*      ANMERKUNG:   Ich habe eine hardcoded Nachricht "message" definiert und war verwirrt, dass 
+        sie in der "umgekehrten Reihenfolge" verarbeitet wird. Sprich Index 0 hat auf das (optisch) letzte (rechte) Zeichen
+        des 64-Bit Elements von "message" zugegriffen. ES GIBT ALLERDINGS KEIN PROBLEM!
+        Für das Programm liegt LSB am Index 0, und da ich gewohnt bin Texte von links nach rechts 
+        zu lesen, dachte ich, Index 0 sei auch links.
+        Was ich damit sagen will - es ist eine kleine kognitive Falle.
+        Index 0 "fängt" (optisch) rechts an, bzw professioneller gesprochen,  am Index 0 liegt der LSB! */
+
     } 
 
     }

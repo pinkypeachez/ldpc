@@ -56,7 +56,7 @@ int main() {
         0b0110110001010100011010100111001001101101011101101110110010110010,
         0b0110110001010001011010100111010101101101011100000110110011010010,
         0b0100111001010010011010100111000011101111011101100110110011110010,
-        0b0110110001010000111010100111001011101101011100100110110001110010
+        0b0010110001010000111010100111001011101101011100100110110001110011
     };
     std::array<uint64_t,ROWS> parity= {};
 
@@ -83,11 +83,18 @@ int main() {
     else
        std::cout << "FEHLER IM ENCODER" << std::endl;
 
+    
+    
+    // AUSGABE VON CODEWORD (message + parity)
+    std::cout << "Codeword " << std::endl;
+    for (size_t i = 0; i<COLS; i++){
+      std::cout << "i " << i << ": " << std::bitset<64>(codeword[i]) << std::endl;
+    }    
+
 
 
     // ======================================= NOISY CHANNEL 
-     std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
-     
+
 /*      // ---------- WENN BINARY SYMMETRIC
    float noise_level = 0.01f;
 
@@ -117,8 +124,22 @@ int main() {
     float snr_linear = std::pow(10.0f, snr_db / 10.0f);
     float stddev = ComputeStdDev (a,snr_linear);
     //  float stddev = 0.000000001f; test
-    //std::cout << "STDDEV: " << stddev << std::endl;
+    std::cout << "STDDEV: " << stddev << std::endl;
+    
+    std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
+    std::cout << "\n =========== Gaussian Noise Channel =========== " << std::endl;
     GaussianNoise(codeword, r, stddev, a); 
+
+/*     // AUSGABE VON DEM VERRAUSCHTEN CODEWORD  (codeword + gaussian noise)
+    std::cout << "Recieved Codeword (r): " << std::endl;
+    for (size_t i = 0; i<r.size(); i++){
+      std::cout << r[i] << " ";
+      if (i % 63 == 0 and i != 0){
+        std::cout << " " << std::endl;
+      }
+    }   */
+
+
 
 
     // --------------------------------------- VORBEREITUNG AUF DECODER: LLR BERECHNEN, KANTENLISTE BERECHNEN
