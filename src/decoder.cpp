@@ -26,8 +26,8 @@ void FillCNConnections(const int8_t base [ROWS][COLS], std::vector<CheckNode>& c
                     size_t vn_index = col * SCALE +((i + shift) % SCALE);
            
                     
-                   // std::cout << "CN Index: " << cn_index << std::endl;
-                   // std::cout << "VN Index: " << vn_index << std::endl;
+                   //std::cout << "CN Index: " << cn_index << std::endl;
+                   //std::cout << "VN Index: " << vn_index << std::endl;
 
 
                     check_nodes[cn_index].neighbors.push_back(vn_index);
@@ -76,15 +76,15 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
 
                if (llr_magn < node.min1) {
                 //der alte 1.Min-Platz wird zum 2.Platz
-                node.i_min2nd = node.i_min1st;
+                node.i_min2 = node.i_min1;
                 node.min2 = node.min1;
 
                 // der LLR Wert wird zum 1.Min-Platz
-                node.i_min1st = index;
+                node.i_min1 = index;
                 node.min1 = llr_magn;
 
                } else if (llr_magn < node.min2){
-                 node.i_min2nd = index;
+                 node.i_min2 = index;
                  node.min2 = llr_magn;
                }
 
@@ -93,16 +93,20 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
              
 
     }
-/*      // Debugging
+     // Debugging
+    std::cout << "\n Die LLR Werte von den Nachbarn: " << std::endl;
+    for (size_t vn = 0; vn < node.neighbors.size(); vn++){
+            std::cout << "Index: " << node.neighbors[vn] << " (" << current_llr[node.neighbors[vn]] << ") ";
+    }
     std::cout << "XOR Result: " << node.global_sign <<  std::endl;
-    std::cout << "Min1: " << node.min1 << " index " << node.i_min1st << std::endl;
-    std::cout << "Min2: " << node.min2 << " index " << node.i_min2nd <<  std::endl;
-    int i = node.i_min1st;
-    int j = node.i_min2nd;
-    std::cout << "GLOBALES MIN1: index " << node.i_min1st << " Wert: " << current_llr[i] << std::endl;
-    std::cout << "GLOBALES MIN2: index " << node.i_min2nd << " Wert: " << current_llr[j] << std::endl;
+    std::cout << "Min1: " << node.min1 << " index " << node.i_min1 << std::endl;
+    std::cout << "Min2: " << node.min2 << " index " << node.i_min2 <<  std::endl;
+    int i = node.i_min1;
+    int j = node.i_min2;
+    std::cout << "GLOBALES MIN1: index " << node.i_min1 << " Wert: " << current_llr[i] << std::endl;
+    std::cout << "GLOBALES MIN2: index " << node.i_min2 << " Wert: " << current_llr[j] << std::endl;
 
- */
+
 
     
     }
@@ -133,11 +137,11 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
             //std::cout << sign << std::endl;
 
 
-            if (node.neighbors[vn] == node.i_min1st) {
+            if (node.neighbors[vn] == node.i_min1) {
                 // Wenn aktueller VN das absolute MIN entspricht, nehmen wir das 2. kleinste Element
                 smallestValue = node.min2;
-              //  std::cout << "VN-" <<node.neighbors[vn] << " entspricht MIN am Index " << node.i_min1st << std::endl;
-               // std::cout << "Als Min wird das 2.kleinste Minima genommen: " << node.min2 << " am Index " << node.i_min2nd << std::endl;
+              //  std::cout << "VN-" <<node.neighbors[vn] << " entspricht MIN am Index " << node.i_min1 << std::endl;
+               // std::cout << "Als Min wird das 2.kleinste Minima genommen: " << node.min2 << " am Index " << node.i_min2 << std::endl;
             } else {
                 smallestValue = node.min1;
                 
@@ -168,6 +172,7 @@ void VarNodeUpdate(const std::array<float, params::COLS*params::SCALE>& llr, std
 
        } 
     }
+
 
   for (size_t vn = 0; vn < llr.size(); vn++) {
     current_llr[vn] = llr[vn] + vn_sum[vn];

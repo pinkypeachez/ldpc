@@ -167,6 +167,14 @@ int main() {
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base, check_nodes);
 
+/* // AUSGABE PARITY CHECK BIT --> WELCHE VNs SCHÜTZT ER?
+    for (size_t node = 0; node < check_nodes.size(); node++){
+        std::cout << "\n Node " << node << " : " << std::endl;
+        for (size_t vn = 0; vn < check_nodes[node].neighbors.size(); vn++){
+            std::cout << check_nodes[node].neighbors[vn] << " ";
+        }
+    } */
+
 
     
 

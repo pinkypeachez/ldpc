@@ -27,8 +27,8 @@ struct CheckNode {
 
     // Indizes der 2 kleinsten Werte KORREKTUR? bzw wenn ich schon Minima Werte speichere,
     //brauche ich nur das Index von dem allerkleinsten Element
-    int i_min1st = -1;
-    int i_min2nd = -1; 
+    int i_min1 = -1;
+    int i_min2 = -1; 
 
 
 
@@ -37,8 +37,8 @@ struct CheckNode {
         min1 = std::numeric_limits<float>::max();
         min2 = std::numeric_limits<float>::max();
         global_sign = false;
-        i_min1st = -1;
-        i_min2nd = -1;
+        i_min1 = -1;
+        i_min2 = -1;
    
 
 
