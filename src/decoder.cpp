@@ -94,7 +94,7 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
 
     }
      // Debugging
-    std::cout << "\n Die LLR Werte von den Nachbarn: " << std::endl;
+/*     std::cout << "\n Die LLR Werte von den Nachbarn: " << std::endl;
     for (size_t vn = 0; vn < node.neighbors.size(); vn++){
             std::cout << "Index: " << node.neighbors[vn] << " (" << current_llr[node.neighbors[vn]] << ") ";
     }
@@ -105,7 +105,7 @@ void MinAndSign(const std::array<float, COLS*SCALE>& current_llr, std::vector<Ch
     int j = node.i_min2;
     std::cout << "GLOBALES MIN1: index " << node.i_min1 << " Wert: " << current_llr[i] << std::endl;
     std::cout << "GLOBALES MIN2: index " << node.i_min2 << " Wert: " << current_llr[j] << std::endl;
-
+ */
 
 
     

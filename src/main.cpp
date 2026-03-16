@@ -55,12 +55,20 @@ int main() {
 
     // =============== TEST (statt mit dem hardcoded (inhaltlich sinnlosen) bit stream zu arbeiten, als Eingabe char-String nehmen)  ======================================= 
 
-    std::string input = "gaba baka kapapagergerg regergergerg regergergerg p";
+    //std::string input = "gaba baka kapapagergerg regergergerg regergergerg p";
+    std::string input;
+    std::cout << "\n Geben Sie die Nachricht ein, die übertragen werden soll: " << std::endl;
+    std::getline(std::cin, input);
+    std::cout << input << std::endl;
+
+
+    //InputToMessageStruct();
+
     std::cout << "Adresse " << &input << std::endl;
     //std::cout << "Geben Sie die zu übertragende Nachricht ein: " << std::endl;
     //std::cin >> input;
-    int capacity = input.capacity();
-    uint size = input.size();
+    size_t capacity = input.capacity();
+    size_t size = input.size();
     std::cout << "Message size: " << input.capacity() << std::endl;
     std::cout << "Message size: " << input.size() << std::endl;
 
