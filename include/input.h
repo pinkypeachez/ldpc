@@ -21,7 +21,7 @@ class MessageDispatcher {
     void dispatch(const std::string& userInput) {
         this->userInput = userInput; // speichern für die func um beim decodieren wieder als ascii formatiert auszugeben
         FillChunksWithInput(); 
-        std::cout << "Die Nachricht wurde für Decoder vorbereitet. Es wird  " << n_batch_ << " Durchläufe geben" << std::endl;
+        std::cout << "Die Nachricht wurde für Encoder vorbereitet. Es wird  " << n_batch_ << " Durchläufe geben" << std::endl;
     }
 
 
