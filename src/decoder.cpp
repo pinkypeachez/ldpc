@@ -179,7 +179,7 @@ void VarNodeUpdate(const std::array<float, params::COLS*params::SCALE>& llr, std
   }
 }
 
-void HardDecision(const std::array<float, params::COLS*params::SCALE>& current_llr, std::array<int, params::COLS*params::SCALE>& calc_codeword){
+void HardDecision(const std::array<float, params::COLS*params::SCALE>& current_llr, std::bitset<params::COLS*params::SCALE>& calc_codeword){
     // ohne & weil ich die LLR Werte nicht verändern will
 
     for (size_t i = 0; i < current_llr.size(); i++){

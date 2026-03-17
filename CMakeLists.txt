@@ -13,6 +13,7 @@ target_sources(test PRIVATE
     src/preprocessing.cpp
     src/noisy_channel.cpp
     src/decoder.cpp
+    src/input.cpp
 )
 target_include_directories(test PUBLIC include)
 target_compile_options(test PUBLIC -O3 -ffast-math -march=native -std=c++20)

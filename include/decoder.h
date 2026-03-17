@@ -52,5 +52,5 @@ void FillCNConnections(const int8_t base [params::ROWS][params::COLS], std::vect
 void MinAndSign(const std::array<float, params::COLS*params::SCALE>& current_llr, std::vector<CheckNode>& check_nodes);
 void CheckNodeUpdate(const std::array<float, params::COLS*params::SCALE>& current_llr, std::vector<CheckNode>& check_nodes);
 void VarNodeUpdate(const std::array<float, params::COLS*params::SCALE>& llr, std::array<float, params::COLS*params::SCALE>& current_llr, const std::vector<CheckNode>& check_nodes);
-void HardDecision(const std::array<float, params::COLS*params::SCALE>& current_llr, std::array<int, params::COLS*params::SCALE>& calc_codeword);
+void HardDecision(const std::array<float, params::COLS*params::SCALE>& current_llr, std::bitset<params::COLS*params::SCALE>& calc_codeword);
 void CalcSyndrom();

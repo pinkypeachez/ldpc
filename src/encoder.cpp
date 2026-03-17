@@ -16,7 +16,7 @@ void ComputeParity (const int8_t (&base)[ROWS][COLS], const std::array<uint64_t,
         {
             if (base[row][i] >= 0){
             uint64_t rotate = std::rotr(message[i], base[row][i]);
-            std::cout << std::bitset<64>(message[i]) << " " << std::bitset<64>(rotate) << " um " << +base[row][i]<< std::endl;
+            //std::cout << std::bitset<64>(message[i]) << " " << std::bitset<64>(rotate) << " um " << +base[row][i]<< std::endl;
             xor_sum ^= rotate;   // xor_sum = xor_sum xor rotate;  
             }  
         }

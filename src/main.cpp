@@ -8,6 +8,7 @@
 #include "noisy_channel.h"
 #include "decoder.h"
 #include "params.h"
+#include "input.h"
 
 using namespace params;
 
@@ -59,50 +60,30 @@ int main() {
     std::string input;
     std::cout << "\n Geben Sie die Nachricht ein, die übertragen werden soll: " << std::endl;
     std::getline(std::cin, input);
-    std::cout << input << std::endl;
 
+    std::cout << "Die Nachricht ist " << input.size() << " Bytes groß" << std::endl;
 
-    //InputToMessageStruct();
+    MessageDispatcher m;
+    m.dispatch(input);
 
-    std::cout << "Adresse " << &input << std::endl;
-    //std::cout << "Geben Sie die zu übertragende Nachricht ein: " << std::endl;
-    //std::cin >> input;
-    size_t capacity = input.capacity();
-    size_t size = input.size();
-    std::cout << "Message size: " << input.capacity() << std::endl;
-    std::cout << "Message size: " << input.size() << std::endl;
+    std::array<uint64_t,COLS-ROWS> message = m.chunks_[0];
 
-    //Wie viele "message" Blöcke sollen verarbeitet werden?
-    float n_batch = std::ceil(input.size()/(32.0f));
-    std::cout << n_batch << " Batches " << std::endl;
+/*     // Ausgabe der zu übertragenden Nachricht (gepadded, in binary)
+for (size_t i = 0; i < m.n_batch_; i++){
+        for (size_t j = 0; j < m.chunks_[i].size(); j++){
 
-    size_t rest = input.size() % 32; // wie viele Elemente sind im letzten Batch?
-
-    std::array<uint64_t,COLS-ROWS> new_m= {};
-
-// Fülle die Message Block mit den Werten
-
-/*     for (size_t batch = 0; batch < n_batch; batch++){
-     for (size_t i = 0; i < new_m.size(); i++){
-            if (i != n_batch) {
-                std::string bit64 = input.substr(8*i, 8*i+8);
-                new_m[i] = std::bitset<64>(bit64).to_ullong();
-                std::cout << std::bitset<64>(new_m[i]) <<std::endl;
-
-        } else {
-            std::cout << "sheeeet " << std::endl;
+         std::cout << std::bitset<64>(m.chunks_[i][j]) << std::endl;
         }
-
-    }
     } */
 
+
    // ======================================= ENCODER STAGE  ======================================= 
-    std::array<uint64_t,COLS-ROWS> message= {
+/* AUSKOMMENTIEREN!!!    std::array<uint64_t,COLS-ROWS> message= {
         0b0110110001010100011010100111001001101101011101101110110010110010,
         0b0110110001010001011010100111010101101101011100000110110011010010,
         0b0100111001010010011010100111000011101111011101100110110011110010,
         0b0010110001010000111010100111001011101101011100100110110001110011
-    };
+    }; */
     std::array<uint64_t,ROWS> parity= {};
 
     ComputeParity(base, message, parity);
@@ -229,7 +210,7 @@ int main() {
     // ======================================= DECODER STAGE ==============================================
     
     size_t iterate = 50;
-    std::array<int, COLS*SCALE> calc_codeword = {};
+    std::bitset<COLS*SCALE> calc_codeword;
     std::array<int,ROWS*SCALE> syndrom = {};
     bool parity_failed;
 
@@ -284,6 +265,34 @@ int main() {
             } 
 
     }
+
+// wenns userinput, gebe die nachricht wieder als ascii (calc_codeword ist ein bitset!!)
+std::cout << "\n\n Rekonstruierte Nachricht: " << std::endl;
+
+for (size_t i = 0; i < 4; i++) { // da message 256 Bit ist und aus 64bit Elementen besteht 256/64=4 
+    std::bitset<64> chunk;
+
+    for (size_t bitIndex = 0; bitIndex < 64; bitIndex++) {
+        if (calc_codeword[i * 64 + bitIndex]) {
+            chunk.set(bitIndex); // bit an Position bitIndex auf 1 setzen
+        }
+    }
+
+    // 64 Bits in eine Zahl umwandeln
+    uint64_t rawData = chunk.to_ullong(); 
+
+    // ascii Zeichen ausgeben
+    uint8_t* bytePtr = reinterpret_cast<uint8_t*>(&rawData);
+    for (size_t b = 0; b < 8; b++) {
+        if (bytePtr[b] != 0) {
+            std::cout << static_cast<char>(bytePtr[b]);
+        }
+    }
+}
+std::cout << std::endl;
+
+
+
 
     return 0;
 }
