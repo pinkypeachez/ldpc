@@ -6,6 +6,7 @@
 #include "preprocessing.h"
 #include "encoder.h"
 #include "noisy_channel.h"
+#include "gaussianNoise.h"
 #include "decoder.h"
 #include "params.h"
 #include "input.h"
@@ -28,8 +29,9 @@ int main() {
     std::cout << " Base Matrix wird gefüllt " << std::endl;
 
     int8_t base[ROWS][COLS] = {};
-    FillParityPart(base);
-    FillMessagePart(base,generator);
+    FillParityPart(base); //Dual Diagonal Form
+    FillMessagePart(base,generator); // CN Degree ist gleich, ausgenommen 0.Zeile (bzw.0-SCALE Zeilen) - Quasi Irregular LDPC
+
 
     std::cout << "\n ======= Girth-4 Check wird durchgeführt..." << std::endl;
     bool girthOk = false;
@@ -143,6 +145,8 @@ for (size_t i = 0; i < m.n_batch_; i++){
     float ch_rel = std::log((1.0f-noise_level)/noise_level);
      */
     
+
+    /*
     // KORREKTUR bitte auch in params datei!!!!!!
  // SNR wird meistens in dB angegeben
     const float a = 1.0f; // Amplitude
@@ -156,7 +160,7 @@ for (size_t i = 0; i < m.n_batch_; i++){
     std::cout << "\n =========== Gaussian Noise Channel =========== " << std::endl;
     GaussianNoise(codeword, r, stddev, a); 
 
-/*     // AUSGABE VON DEM VERRAUSCHTEN CODEWORD  (codeword + gaussian noise)
+     // AUSGABE VON DEM VERRAUSCHTEN CODEWORD  (codeword + gaussian noise)
     std::cout << "Recieved Codeword (r): " << std::endl;
     for (size_t i = 0; i<r.size(); i++){
       std::cout << r[i] << " ";
@@ -164,7 +168,13 @@ for (size_t i = 0; i < m.n_batch_; i++){
         std::cout << " " << std::endl;
       }
     }   */
-
+/*
+// Binary Erasure
+   float erasureProb = 0.1f;
+   // die Wete stehen für unsicherheit
+   // 1 - ich bin sicher was ankommt, 0 - ich bim komplett unsicher (Erasure)
+   std::array <bool, COLS*SCALE> noErasureCertainty = {1}; //angnommen, wir sind über uns über alle Werte sicher
+   BinaryErasure(erasureProb, noErasureCertainty);
 
 
 
@@ -179,27 +189,46 @@ for (size_t i = 0; i < m.n_batch_; i++){
     float ch_rel = (2.0f  * a)/ (stddev*stddev); 
 
     
+    // COMPUTELLR ALS SEPARATE FUNKTION!!!!!
+// LLR FÜLLEN FÜR ERASURE
+        std::array<float, COLS*SCALE> llr = {};
+    for (size_t i=0; i < r.size(); i++){
+        llr[i] = ch_rel * static_cast<float>(noErasureCertainty[i]) * r[i];
+        //std::cout << llr[i] << std::endl;
+    } 
+
+
     //LLR's: initial
     // Channel LLR: intrinsic term
     std::array<float, COLS*SCALE> llr = {};
     for (size_t i=0; i < r.size(); i++){
         llr[i] = ch_rel * r[i];
         //std::cout << llr[i] << std::endl;
-    } 
+    } */
+
+ // --------------------------------------- NOISY CHANNEL
+//    const float a = 1.0f; // Amplitude
+ //   const float snr_db = 5.0f; // SNR in dB
+    GaussianNoise gn(5.0f, 1.0f);
+    std::array<float, COLS*SCALE> llr = {};
+    gn.applyNoise(codeword, llr);
+// llr erstellen!!!!!!
+
 
     // LLR das während der Iteration verändert wird: extrinsic term
     std::array<float, COLS*SCALE> current_llr = llr;
 
+ // --------------------------------------- VORBEREITUNG AUF DECODER: KANTENLISTE BERECHNEN
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base, check_nodes);
 
-/* // AUSGABE PARITY CHECK BIT --> WELCHE VNs SCHÜTZT ER?
+/*  // AUSGABE PARITY CHECK BIT : dazugehörige VNs 
     for (size_t node = 0; node < check_nodes.size(); node++){
         std::cout << "\n Node " << node << " : " << std::endl;
         for (size_t vn = 0; vn < check_nodes[node].neighbors.size(); vn++){
             std::cout << check_nodes[node].neighbors[vn] << " ";
         }
-    } */
+    }  */
 
 
     

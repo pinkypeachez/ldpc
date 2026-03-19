@@ -33,6 +33,7 @@ void FillMessagePart (int8_t (&base)[ROWS][COLS], std::mt19937 &generator){
     }
 };
 
+
 bool girthCheck ( int8_t (&base) [ROWS][COLS]){
    //std::cout << " Girth-4 Check beginnt... "<< std::endl;
     //cout << +COLS << +ROWS << endl;

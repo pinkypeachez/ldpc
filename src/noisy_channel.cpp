@@ -36,67 +36,28 @@ void binary_symmetric(std::array<uint64_t,COLS> &codeword, float noise_level, st
   } 
 }
     
-// ========================= GAUSSIAN ========================= 
-float ComputeStdDev(const float a, const float snr_linear ){
-  // Gesucht wird: Standardabweichung fürs Modellieren des Rauschens
-
-    // Energy pro gesendeten Symbol (coded bit)
-    // Formel umstellen: ((-a)*(-a) + a*a) / 2 ----> 2*(a*a)/ 2 ----> a*a
-    float Es = a*a;
-
-    // Energy pro Message bit 
-    float Eb = Es/ CODE_RATE; 
-
-    float n_0 = Eb / snr_linear;
+/* void BinaryErasure(const float erasureProb, const std::vector <bool>& noErasureCertainty){
+    cout << "Binary Erasure Channel" << endl;
     
-    float stddev = std::sqrt(n_0 / 2.0f);
-    return stddev;
-}
+    // Static damit Generator nicht bei jedem Funktionsaufruf neu startet
+  static std::default_random_engine generator;
+  std::bernoulli_distribution distribution(erasureProb); // Erasure Probability p=0.1
 
 
-  
-void GaussianNoise(const std::array<uint64_t, COLS> &codeword, 
-              std::array<float, COLS*SCALE>& r,
-              const float stddev,
-              const float a){
-
-
-     // -----------------  "Map to a Signal VEctor"
-     // 0 wird auf a, 1 auf -a [Amplitude] gemappt
-    std::array<float, COLS*SCALE> t = {}; // 512 Bit groß, flacher Vektor
-
-    for (size_t i = 0; i<COLS; i++){ // es wäre i<codeword.size() besser KORREKTUR
-      std::bitset<64> current_codeword = std::bitset<64>(codeword[i]);
-      //std::cout << "i " << i << " : "<< bitset<64>(codeword[i]) << std::endl;
-    
-      for (size_t j = 0; j < 64; j++){ 
-        bool bit = current_codeword[j];
-        bit == 0 ? t[64*i+j]=a : t[64*i+j]=-a;
-        //std::cout <<  " - codeword[i]" << (current_codeword)[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
-      }
-    }
-
-    // -----------------  Recieved signal (aka add gaussian noise to transmitted vector)
-    // KORREKTUR generator welches Scope am besten?
-    static std::default_random_engine generator;
-    std::normal_distribution<float> distribution(0.0,stddev);
-    
-    for (size_t i = 0; i<t.size(); i++){
-        
-        r[i] = t[i] + distribution(generator);
-        //std::cout << "t " << t[i] << " --> " << r[i] << std::endl;
-
-/*      ANMERKUNG:   Ich habe eine hardcoded Nachricht "message" definiert und war verwirrt, dass 
-        sie in der "umgekehrten Reihenfolge" verarbeitet wird. Sprich Index 0 hat auf das (optisch) letzte (rechte) Zeichen
-        des 64-Bit Elements von "message" zugegriffen. ES GIBT ALLERDINGS KEIN PROBLEM!
-        Für das Programm liegt LSB am Index 0, und da ich gewohnt bin Texte von links nach rechts 
-        zu lesen, dachte ich, Index 0 sei auch links.
-        Was ich damit sagen will - es ist eine kleine kognitive Falle.
-        Index 0 "fängt" (optisch) rechts an, bzw professioneller gesprochen,  am Index 0 liegt der LSB! */
-
+  for (size_t i = 0; i < COLS*SCALE; i++){ 
+        if (distribution(generator) == 1){
+          noErasureCertainty[i] = 0;
+          std::cout << "Erasure bei " << i << " ";
+        } 
     } 
 
-    }
+  }  */
+
+
+
+
+
+    
  
  
  

@@ -12,6 +12,7 @@ target_sources(test PRIVATE
     src/encoder.cpp 
     src/preprocessing.cpp
     src/noisy_channel.cpp
+    src/gaussianNoise.cpp
     src/decoder.cpp
     src/input.cpp
 )
