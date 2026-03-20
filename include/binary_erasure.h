@@ -12,6 +12,6 @@ class BinaryErasure : public INoisyChannel {
     public:
         BinaryErasure(float erasureProb): erasureProb_(erasureProb) {};
 
-        void applyNoise(const std::array<float, params::COLS*params::SCALE>& t,std::array<float, params::COLS*params::SCALE>& llr)
+        void applyNoise( std::array<float, params::COLS*params::SCALE>& llr)
              override;
 };

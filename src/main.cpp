@@ -127,19 +127,19 @@ for (size_t i = 0; i < m.n_batch_; i++){
 
      // 1: Map to a Signal Vector (0 wird auf a, 1 auf -a [Amplitude] gemappt)
 
-    std::array<float, COLS*SCALE> t= {};
-    MapToSignalVector(codeword, t, a);
+    std::array<float, COLS*SCALE> llr = {};
+
+    MapToSignalVector(codeword, llr, a);
 
     // 2: Add noise
-    std::array<float, COLS*SCALE> llr = {};
 
     //GaussianNoise(SNR in dB, Amplitude) 
     GaussianNoise gn(5.0f, a);
 
-    gn.applyNoise(t, llr); 
+    gn.applyNoise(llr); 
 
     BinaryErasure bec(0.2f);
-    bec.applyNoise(t, llr);
+    bec.applyNoise(llr); 
 
 
 
