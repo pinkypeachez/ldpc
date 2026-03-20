@@ -36,23 +36,6 @@ void binary_symmetric(std::array<uint64_t,COLS> &codeword, float noise_level, st
   } 
 }
     
-/* void BinaryErasure(const float erasureProb, const std::vector <bool>& noErasureCertainty){
-    cout << "Binary Erasure Channel" << endl;
-    
-    // Static damit Generator nicht bei jedem Funktionsaufruf neu startet
-  static std::default_random_engine generator;
-  std::bernoulli_distribution distribution(erasureProb); // Erasure Probability p=0.1
-
-
-  for (size_t i = 0; i < COLS*SCALE; i++){ 
-        if (distribution(generator) == 1){
-          noErasureCertainty[i] = 0;
-          std::cout << "Erasure bei " << i << " ";
-        } 
-    } 
-
-  }  */
-
 
 void MapToSignalVector(const std::array<uint64_t, params::COLS> &codeword, 
               std::array<float, params::COLS*params::SCALE>& llr, const float a){

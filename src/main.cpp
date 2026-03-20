@@ -8,6 +8,7 @@
 #include "noisy_channel.h"
 #include "gaussianNoise.h"
 #include "binary_erasure.h"
+#include "binary_symmetric.h"
 #include "decoder.h"
 #include "params.h"
 #include "input.h"
@@ -132,10 +133,11 @@ for (size_t i = 0; i < m.n_batch_; i++){
     MapToSignalVector(codeword, llr, a);
 
     // 2: Add noise
+    BinarySymmetric bsc(0.2f);
+    bsc.applyNoise(llr);
 
     //GaussianNoise(SNR in dB, Amplitude) 
     GaussianNoise gn(5.0f, a);
-
     gn.applyNoise(llr); 
 
     BinaryErasure bec(0.2f);
