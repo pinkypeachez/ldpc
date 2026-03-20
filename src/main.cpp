@@ -7,6 +7,7 @@
 #include "encoder.h"
 #include "noisy_channel.h"
 #include "gaussianNoise.h"
+#include "binary_erasure.h"
 #include "decoder.h"
 #include "params.h"
 #include "input.h"
@@ -122,97 +123,24 @@ for (size_t i = 0; i < m.n_batch_; i++){
 
 
     // ======================================= NOISY CHANNEL 
+    float a = 2.0f; //Amplitude
 
-/*      // ---------- WENN BINARY SYMMETRIC
-   float noise_level = 0.01f;
+     // 1: Map to a Signal Vector (0 wird auf a, 1 auf -a [Amplitude] gemappt)
 
-    //FÜR DEBUGGING!!! Um Indizes von geflippten Bits zu kennen
-    std::vector <int> flipped_bits;
+    std::array<float, COLS*SCALE> t= {};
+    MapToSignalVector(codeword, t, a);
 
-    binary_symmetric(codeword, noise_level, flipped_bits);
-   
-
-    // auf r-Vektor mappen -1 für  1, +1 für 0
-    std::bitset<64> bits;
-    for (size_t i = 0; i < COLS; i++) {
-        bits = codeword[i];
-        for (size_t j = 0; j < 64; j++) {
-            bits[j] == 1 ? r[i * 64 + j] = -1.0f: r[i * 64 + j] = 1.0f;
-            std::cout << r[i * 64 + j] << std::endl;
-        }
-    }
-
-    float ch_rel = std::log((1.0f-noise_level)/noise_level);
-     */
-    
-
-    /*
-    // KORREKTUR bitte auch in params datei!!!!!!
- // SNR wird meistens in dB angegeben
-    const float a = 1.0f; // Amplitude
-    const float snr_db = 5.0f; // SNR in dB
-    const float snr_linear = std::pow(10.0f, snr_db / 10.0f);
-    const float stddev = ComputeStdDev (a,snr_linear);
-    //  float stddev = 0.000000001f; test
-    std::cout << "STDDEV: " << stddev << std::endl;
-    
-    std::array<float, COLS*SCALE> r = {}; // recieved vector (signal + gaussian noise)
-    std::cout << "\n =========== Gaussian Noise Channel =========== " << std::endl;
-    GaussianNoise(codeword, r, stddev, a); 
-
-     // AUSGABE VON DEM VERRAUSCHTEN CODEWORD  (codeword + gaussian noise)
-    std::cout << "Recieved Codeword (r): " << std::endl;
-    for (size_t i = 0; i<r.size(); i++){
-      std::cout << r[i] << " ";
-      if (i % 63 == 0 and i != 0){
-        std::cout << " " << std::endl;
-      }
-    }   */
-/*
-// Binary Erasure
-   float erasureProb = 0.1f;
-   // die Wete stehen für unsicherheit
-   // 1 - ich bin sicher was ankommt, 0 - ich bim komplett unsicher (Erasure)
-   std::array <bool, COLS*SCALE> noErasureCertainty = {1}; //angnommen, wir sind über uns über alle Werte sicher
-   BinaryErasure(erasureProb, noErasureCertainty);
-
-
-
-    // --------------------------------------- VORBEREITUNG AUF DECODER: LLR BERECHNEN, KANTENLISTE BERECHNEN
-
-    // Compute Channel Reliability
-    // Formel: 2 * Wurzel aus Ec/ sigma hoch 2
-    // Ec = a hoch 2
-    //     float ch_rel = (2.0f  * std::sqrt(a*a))/ (stddev*stddev); aber sqrt(a*a) = a
-    
-    
-    float ch_rel = (2.0f  * a)/ (stddev*stddev); 
-
-    
-    // COMPUTELLR ALS SEPARATE FUNKTION!!!!!
-// LLR FÜLLEN FÜR ERASURE
-        std::array<float, COLS*SCALE> llr = {};
-    for (size_t i=0; i < r.size(); i++){
-        llr[i] = ch_rel * static_cast<float>(noErasureCertainty[i]) * r[i];
-        //std::cout << llr[i] << std::endl;
-    } 
-
-
-    //LLR's: initial
-    // Channel LLR: intrinsic term
+    // 2: Add noise
     std::array<float, COLS*SCALE> llr = {};
-    for (size_t i=0; i < r.size(); i++){
-        llr[i] = ch_rel * r[i];
-        //std::cout << llr[i] << std::endl;
-    } */
 
- // --------------------------------------- NOISY CHANNEL
-//    const float a = 1.0f; // Amplitude
- //   const float snr_db = 5.0f; // SNR in dB
-    GaussianNoise gn(5.0f, 1.0f);
-    std::array<float, COLS*SCALE> llr = {};
-    gn.applyNoise(codeword, llr);
-// llr erstellen!!!!!!
+    //GaussianNoise(SNR in dB, Amplitude) 
+    GaussianNoise gn(5.0f, a);
+
+    gn.applyNoise(t, llr); 
+
+    BinaryErasure bec(0.2f);
+    bec.applyNoise(t, llr);
+
 
 
     // LLR das während der Iteration verändert wird: extrinsic term

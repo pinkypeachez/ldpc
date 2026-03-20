@@ -29,14 +29,13 @@ float GaussianNoise::ComputeStdDev(const float a, const float snr_db){
 
 
   
-void GaussianNoise::applyNoise(const std::array<uint64_t, params::COLS> &codeword, 
-              std::array<float, params::COLS*params::SCALE>& llr){
+void GaussianNoise::applyNoise(const std::array<float, params::COLS*params::SCALE>& t, std::array<float, params::COLS*params::SCALE>& llr){
                 
 /* void GaussianNoise::applyNoise(const std::array<uint64_t, params::COLS> &codeword, 
               std::array<float, params::COLS*params::SCALE>& r){
 
  */
-     // -----------------  "Map to a Signal VEctor"
+/*      // -----------------  "Map to a Signal VEctor"
      // 0 wird auf a, 1 auf -a [Amplitude] gemappt
     std::array<float, params::COLS*params::SCALE> t = {}; // 512 Bit groß, flacher Vektor
 
@@ -49,7 +48,7 @@ void GaussianNoise::applyNoise(const std::array<uint64_t, params::COLS> &codewor
         bit == 0 ? t[64*i+j]=a_ : t[64*i+j]=-a_;
         //std::cout <<  " - codeword[i]" << (current_codeword)[j] << " " << "t[i]:" << t[SCALE*i+j] << std::endl;
       }
-    }
+    } */
 
     // -----------------  Recieved signal (aka add gaussian noise to transmitted vector)
     static std::default_random_engine generator;

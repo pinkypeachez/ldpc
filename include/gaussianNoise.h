@@ -23,6 +23,6 @@ class GaussianNoise : public INoisyChannel {
     public:
         GaussianNoise(float snr_db, float a); //Konstruktor
 
-        void applyNoise(const std::array<uint64_t, params::COLS>& codeword, std::array<float, params::COLS*params::SCALE>& llr)
+        void applyNoise(const std::array<float, params::COLS*params::SCALE>& t, std::array<float, params::COLS*params::SCALE>& llr)
              override;
 };

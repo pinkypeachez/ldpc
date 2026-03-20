@@ -13,6 +13,7 @@ target_sources(test PRIVATE
     src/preprocessing.cpp
     src/noisy_channel.cpp
     src/gaussianNoise.cpp
+    src/binary_erasure.cpp
     src/decoder.cpp
     src/input.cpp
 )
