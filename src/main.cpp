@@ -17,7 +17,14 @@
 using namespace params;
 
 
-int main() {
+int main(int argc, char* argv[]) {
+    ArgumentParser arguments(argc, argv);
+    arguments.parse();
+
+
+
+
+
     // ======================================= PREPROCESSING STAGE ======================================= 
     // 1. Base Matrix wird erstellt:
     // Links (Message-Teil): wird mit zufälligen Shift Werden gefüllt - FillMessagePart
@@ -132,11 +139,10 @@ for (size_t i = 0; i < m.n_batch_; i++){
     MapToSignalVector(codeword, llr, a);
 
     // 2: Add noise (Binary Symmetric / Gaussian Noise / Binary Erasure )
-    BinarySymmetric bsc(0.2f);
+    BinarySymmetric bsc(0.1f);
     bsc.applyNoise(llr);
 
-    //GaussianNoise(SNR in dB, Amplitude) 
-    GaussianNoise gn(5.0f, a);
+    GaussianNoise gn(5.0f, a);     //(SNR in dB, a Amplitude) 
     gn.applyNoise(llr); 
 
     BinaryErasure bec(0.2f);

@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.17)
 
-project(test)
+project(ldpc)
 
 #targets are executable and libraries
 #target wie Object
 # targets haben Properties, die kann man über Member Function verändern
-add_executable(test)
+add_executable(ldpc)
 
-target_sources(test PRIVATE 
+target_sources(ldpc PRIVATE 
     src/main.cpp 
     src/encoder.cpp 
     src/preprocessing.cpp
@@ -19,5 +19,5 @@ target_sources(test PRIVATE
     src/decoder.cpp
     src/input.cpp
 )
-target_include_directories(test PUBLIC include)
-target_compile_options(test PUBLIC -O3 -ffast-math -march=native -std=c++20)
+target_include_directories(ldpc PUBLIC include)
+target_compile_options(ldpc PUBLIC -O3 -ffast-math -march=native -std=c++20)
