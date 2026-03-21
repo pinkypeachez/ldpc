@@ -9,6 +9,7 @@
 #include "gaussianNoise.h"
 #include "binary_erasure.h"
 #include "binary_symmetric.h"
+#include "burst_error.h"
 #include "decoder.h"
 #include "params.h"
 #include "input.h"
@@ -127,12 +128,10 @@ for (size_t i = 0; i < m.n_batch_; i++){
     float a = 2.0f; //Amplitude
 
      // 1: Map to a Signal Vector (0 wird auf a, 1 auf -a [Amplitude] gemappt)
-
     std::array<float, COLS*SCALE> llr = {};
-
     MapToSignalVector(codeword, llr, a);
 
-    // 2: Add noise
+    // 2: Add noise (Binary Symmetric / Gaussian Noise / Binary Erasure )
     BinarySymmetric bsc(0.2f);
     bsc.applyNoise(llr);
 
@@ -143,12 +142,16 @@ for (size_t i = 0; i < m.n_batch_; i++){
     BinaryErasure bec(0.2f);
     bec.applyNoise(llr); 
 
+    BurstError burst(0.5f,0.01f,0.1f);
+    burst.applyNoise(llr);
 
 
-    // LLR das während der Iteration verändert wird: extrinsic term
-    std::array<float, COLS*SCALE> current_llr = llr;
 
  // --------------------------------------- VORBEREITUNG AUF DECODER: KANTENLISTE BERECHNEN
+    
+    // LLR das während der Iteration verändert wird: extrinsic term
+    std::array<float, COLS*SCALE> current_llr = llr;
+    
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base, check_nodes);
 

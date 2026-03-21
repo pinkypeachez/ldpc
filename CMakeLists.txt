@@ -15,6 +15,7 @@ target_sources(test PRIVATE
     src/gaussianNoise.cpp
     src/binary_erasure.cpp
     src/binary_symmetric.cpp
+    src/burst_error.cpp
     src/decoder.cpp
     src/input.cpp
 )
