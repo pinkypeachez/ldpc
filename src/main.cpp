@@ -144,8 +144,7 @@ for (size_t i = 0; i < m.n_batch_; i++){
 
     BurstError burst(0.5f,0.01f,0.1f);
     burst.applyNoise(llr);
-
-
+    burst.statistics();
 
  // --------------------------------------- VORBEREITUNG AUF DECODER: KANTENLISTE BERECHNEN
     

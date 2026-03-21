@@ -4,6 +4,11 @@
 
 BinarySymmetric::BinarySymmetric(float flipProb) : flipProb_(flipProb) {}
 
+void BinarySymmetric::statistics() {
+     
+    }
+
+    
 void BinarySymmetric::applyNoise(std::array<float, params::COLS*params::SCALE>& llr){
   static std::default_random_engine generator;
   std::bernoulli_distribution distribution(flipProb_); // Noise Level p=0.1

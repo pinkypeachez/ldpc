@@ -11,7 +11,11 @@ GaussianNoise::GaussianNoise(float snr_db, float a) : a_(a), snr_db_(snr_db)
     ch_rel_ = (2.0f * a_) / (stddev_ * stddev_);
 }
 
+void GaussianNoise::statistics() {
+     
+    }
 
+    
 // Gesucht wird: Standardabweichung fürs Modellieren des Rauschens
 float GaussianNoise::ComputeStdDev(const float a, const float snr_db){
    float snr_linear = std::pow(10.0f, snr_db / 10.0f);

@@ -14,7 +14,10 @@ class INoisyChannel {
   public:
     virtual ~INoisyChannel() = default; // destruktor ???????
     // für alle NoiseModels gleich:  LLRs müssen aus dem codewort berechnet werden
+
     virtual void applyNoise(std::array<float, params::COLS*params::SCALE>& llr) = 0;
+
+    virtual void statistics() = 0;
 };
 
 

@@ -6,27 +6,42 @@
 BurstError::BurstError(float errorRateBurst, float badProb, float goodProb)
   : errorRateBurst_(errorRateBurst), badProb_(badProb), goodProb_(goodProb) {}
 
+void BurstError::statistics() {
+     std::cout << "Anzahl Bursts: " << numberBursts << std::endl;
+     std::cout << "Mit Längen: " << std::endl;
+     for (size_t i = 0; i < burstLength.size();i++){
+        std::cout << burstLength[i] << " ";
+     }
+     std::cout << "\n";
+    }
 
+    
 //Gilbert Elliott Noise Modell
 void BurstError::applyNoise( std::array<float, params::COLS*params::SCALE>& llr){
   static std::default_random_engine generator;
   std::bernoulli_distribution errorDist(errorRateBurst_);
   std::bernoulli_distribution badDist(badProb_);
   std::bernoulli_distribution goodDist(goodProb_);
-
+  size_t lengthCount = 0;
 
   for (size_t i = 0; i < llr.size(); i++){
     //std::cout << " ===== " << std::endl; //debugging das steht für nächstes i
+     
      if (state_ == 1){ //Wenn im Good State:
         llr[i] = llr[i];// ist bestimmt DUMM. man kanns weglassen, LLR bleibt so wie er 
         if (badDist(generator) == 1){
             state_ = 0;
         }
     }else { // Wenn im Bad State:
-        llr[i] *= (1-errorDist(generator)); //CAST ZU FLOAT!
-        //std::cout << "1 " << std::endl; // debugging: länge von Burst nachvollziehen
+        llr[i] *= static_cast<float>(1-errorDist(generator)); 
+        lengthCount++;
+        
         if (goodDist(generator) == 1){
             state_ = 1;
+            numberBursts ++; //zähle wie viele Bursts aufgetreten sind (für Statistik)
+            burstLength.push_back(lengthCount); //füge die Länge des jeweiligen Bursts
+            lengthCount = 0; 
+
         }
     }
 
@@ -48,14 +63,4 @@ insofern kann ich ohne if-else den llr wert berechnen indem ich LLR mit Output v
   
   }
     
-
-/*     for (size_t i = 0; i < llr.size(); i++){
-    if (distribution(generator) == 1) {
-     for (size_t j = 0; j < burstLength_; j++){
-        llr[i] *= (-1);
-     }
-     
-    }
-  } */
-
 

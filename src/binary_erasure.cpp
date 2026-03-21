@@ -3,7 +3,11 @@
 #include <random>
 #include <iostream>
 
+void BinaryErasure::statistics() {
+     
+    }
 
+    
 void BinaryErasure::applyNoise( 
               std::array<float, params::COLS*params::SCALE>& llr){
  
