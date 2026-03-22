@@ -3,6 +3,7 @@
 #include <cmath> // fürs aufrunden
 #include <string> // um teile vom string zu nehmen
 
+#include "argument_parser.h"
 #include "preprocessing.h"
 #include "encoder.h"
 #include "noisy_channel.h"
@@ -12,17 +13,20 @@
 #include "burst_error.h"
 #include "decoder.h"
 #include "params.h"
-#include "input.h"
+#include "input_string.h"
 
 using namespace params;
 
 
 int main(int argc, char* argv[]) {
+
+// Parsen der Konsolenargumente 
     ArgumentParser arguments(argc, argv);
     arguments.parse();
 
-
-
+// Input-String (oder Default-String) wird in Chunks aufgeteilt
+    MessageDispatcher m;
+    m.dispatch(arguments.getInput());
 
 
     // ======================================= PREPROCESSING STAGE ======================================= 
@@ -66,36 +70,15 @@ int main(int argc, char* argv[]) {
 
 
 
-    // =============== TEST (statt mit dem hardcoded (inhaltlich sinnlosen) bit stream zu arbeiten, als Eingabe char-String nehmen)  ======================================= 
+// Encoder - Noisy Channel - Decoder Kette für die numberOfChunks wird gestartet
+    for (size_t chunk = 0; chunk < m.numberOfChunks; chunk++){
+        std::array<uint64_t,COLS-ROWS> message = m.chunks[chunk];
 
-    //std::string input = "gaba baka kapapagergerg regergergerg regergergerg p";
-    std::string input;
-    std::cout << "\n Geben Sie die Nachricht ein, die übertragen werden soll: " << std::endl;
-    std::getline(std::cin, input);
 
-    std::cout << "Die Nachricht ist " << input.size() << " Bytes groß" << std::endl;
-
-    MessageDispatcher m;
-    m.dispatch(input);
-
-    std::array<uint64_t,COLS-ROWS> message = m.chunks_[0];
-
-/*     // Ausgabe der zu übertragenden Nachricht (gepadded, in binary)
-for (size_t i = 0; i < m.n_batch_; i++){
-        for (size_t j = 0; j < m.chunks_[i].size(); j++){
-
-         std::cout << std::bitset<64>(m.chunks_[i][j]) << std::endl;
-        }
-    } */
 
 
    // ======================================= ENCODER STAGE  ======================================= 
-/* AUSKOMMENTIEREN!!!    std::array<uint64_t,COLS-ROWS> message= {
-        0b0110110001010100011010100111001001101101011101101110110010110010,
-        0b0110110001010001011010100111010101101101011100000110110011010010,
-        0b0100111001010010011010100111000011101111011101100110110011110010,
-        0b0010110001010000111010100111001011101101011100100110110001110011
-    }; */
+
     std::array<uint64_t,ROWS> parity= {};
 
     ComputeParity(base, message, parity);
@@ -233,6 +216,7 @@ for (size_t i = 0; i < m.n_batch_; i++){
 
     }
 
+// MESSAGEDISPATCHER HAMMING DISTANZ BERECHNEN!!
 // wenns userinput, gebe die nachricht wieder als ascii (calc_codeword ist ein bitset!!)
 std::cout << "\n\n Rekonstruierte Nachricht: " << std::endl;
 
@@ -258,7 +242,7 @@ for (size_t i = 0; i < 4; i++) { // da message 256 Bit ist und aus 64bit Element
 }
 std::cout << std::endl;
 
-
+    }
 
 
     return 0;

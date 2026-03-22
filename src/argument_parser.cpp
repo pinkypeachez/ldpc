@@ -1,8 +1,6 @@
-#include "input.h"
+#include "argument_parser.h"
 
 #include <iostream>
-#include <algorithm>
-#include <cmath>
 
 ArgumentParser::ArgumentParser (int argc, char* argv[]) 
 : argc_(argc), argv_(argv){};
@@ -32,7 +30,11 @@ void ArgumentParser::parse(){
       for (int i = 1; i < argc_; ++i) {
         if (strcmp( argv_[i], "--help") == 0) {
             showHelpAndExit();
-        } else if 
+        } else if (strcmp( argv_[i], "--input")==0) {
+            this->input_ = argv_[++i];
+            std::cout << "Message to be transmitted: " << input_ << "\n" << std::endl;
+
+        }else if 
           (strcmp( argv_[i], "--awgn") == 0 && (i + 2 < argc_)){
             std::cout << "Gaussian Noise:" << std::endl;
           
@@ -148,30 +150,3 @@ void ArgumentParser::parse(){
       }
 }
 
-
-
-void MessageDispatcher::FillChunksWithInput()  {
-
-            //Wie viele "message" Blöcke sollen dem LDPC gegeben werden?
-            n_batch_ = std::ceil(inputBuffer_.size()/(32.0f)); //32 weil 256 message bit = 32 Byte sind
-
-            inputBuffer_.resize(32*n_batch_, 0); // Padding mit 0
-            chunks_.resize(n_batch_); 
-
-            const uint64_t* inputPointer = reinterpret_cast<const uint64_t*>(inputBuffer_.data());
-
-            for (size_t batch = 0; batch < n_batch_; batch++){
-        
-             for (size_t i = 0; i < 4; i ++){ //4 64bit Elemente passen in "Message" Batch
-               chunks_[batch][i] = inputPointer[4*batch + i];
-             }     
-            }
-
-
-        }
-
-void MessageDispatcher::dispatch(const std::string& userInput) {
-    inputBuffer_ = userInput; 
-    FillChunksWithInput(); 
-    std::cout << "Nachricht vorbereitet. Batches: " << n_batch_ << std::endl;
-}
