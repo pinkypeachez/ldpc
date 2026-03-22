@@ -18,6 +18,7 @@ class INoisyChannel {
     virtual void applyNoise(std::array<float, params::COLS*params::SCALE>& llr) = 0;
 
     virtual void statistics() = 0;
+    virtual void getParameter() = 0;
 };
 
 

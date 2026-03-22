@@ -6,6 +6,15 @@
 BurstError::BurstError(float errorRateBurst, float badProb, float goodProb)
   : errorRateBurst_(errorRateBurst), badProb_(badProb), goodProb_(goodProb) {}
 
+void BurstError::getParameter() {
+    std::cout << "Burst Error Noise:\n";
+    //std::cout << "[PARAMETER]\n";
+    std::cout << "    Erasure Probability in a BAD State: " << errorRateBurst_ << std::endl;
+    std::cout << "    Probability GOOD --> BAD: " << badProb_ << std::endl;
+    std::cout << "    Probability BAD --> GOOD: " << goodProb_ << std::endl;
+     std::cout << "\n";
+    }
+
 void BurstError::statistics() {
     // std::cout << "[PARAMETER]\n";
     // std::cout << "    Erasure Probability in a BAD State: " << errorRateBurst_ << std::endl;

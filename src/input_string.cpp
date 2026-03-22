@@ -28,7 +28,7 @@ void MessageDispatcher::FillChunksWithInput()  {
 void MessageDispatcher::dispatch(const std::string& userInput) {
     inputBuffer_ = userInput; 
     FillChunksWithInput(); 
-    std::cout << numberOfChunks << " Chunks are being dispatched..." << std::endl;
+    std::cout << "[INFO] Total chunks: " << numberOfChunks << "\n" << std::endl;
 }
 
 /* void MessageDispatcher::hammingDistance(std::vector<std::array<uint64_t, 4>>& chunks) {

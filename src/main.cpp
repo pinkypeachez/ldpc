@@ -28,6 +28,20 @@ int main(int argc, char* argv[]) {
     MessageDispatcher m;
     m.dispatch(arguments.getInput());
 
+// ALLE Noise Channels werden initialisiert, auch die, die später nicht benutzt werden
+// (ich habe keine Zeit es schlauer zu lösen sry!!)
+    std::cout << "[INFO] NOISE MODELS INITIALISATION" << std::endl;
+    BinarySymmetric bsc(arguments.getBSCProb());
+    GaussianNoise gn(arguments.getSNR(), arguments.getAmplitude());
+    BinaryErasure bec(arguments.getBECProb());
+    BurstError burst(arguments.getErrorRate(), arguments.getBadProb(), arguments.getGoodProb());
+
+// Gesetzte Parameter für gewählte Noise Channels ausgegeben
+    if (arguments.isBSCEnabled()) bsc.getParameter();
+    if (arguments.isAWGNEnabled()) gn.getParameter();
+    if (arguments.isErasureEnabled()) bec.getParameter();
+    if (arguments.isBurstEnabled()) burst.getParameter();
+
 
 // Preprocessing: BaseMatrix wird erstellt   
     std::random_device rd;
@@ -40,9 +54,9 @@ int main(int argc, char* argv[]) {
 
 // ======================================== START:  ======================================== 
 //          "Encoder -> Noisy Channel -> Decoder" Kette in range of "numberOfChunks" 
-
+    std::cout << "\n\n[INFO] START DISPATCHING THE CHUNKS\n" << std::endl;
     for (size_t chunk = 0; chunk < m.numberOfChunks; chunk++){
-        std::cout << "\n CHUNK #" << chunk << ":\n" << std::endl;
+        std::cout << "CHUNK #" << chunk << ":\n" << std::endl;
         std::array<uint64_t,COLS-ROWS> message = m.chunks[chunk];
 
 
@@ -66,34 +80,18 @@ int main(int argc, char* argv[]) {
     // 2: Add noise (Binary Symmetric / Gaussian Noise / Binary Erasure )
     // je nachdem ob als Konsolenargument übergeben (Default: nur Gaussian Noise)
     if (arguments.isBSCEnabled()){
-            std::cout << "===== Binary Symmetric Noise Channel ===== " << std::endl;
-            BinarySymmetric bsc(arguments.getBSCProb());
             bsc.applyNoise(llr);
-            bsc.statistics();
     }
     if (arguments.isAWGNEnabled()){
-            std::cout << "===== Gaussian Noise Channel ===== " << std::endl;
-            GaussianNoise gn(arguments.getSNR(), 
-                            arguments.getAmplitude());     //(SNR in dB, a Amplitude) 
             gn.applyNoise(llr); 
-            gn.statistics();
     }
     if (arguments.isErasureEnabled()){
-            std::cout << "===== Binary Erasure Noise Channel ===== " << std::endl;
-            BinaryErasure bec (arguments.getBECProb());
             bec.applyNoise(llr); 
-            bec.statistics();
     }
     if (arguments.isBurstEnabled()){
-            std::cout << "===== Burst Noise Channel ===== " << std::endl;
-            BurstError burst(arguments.getErrorRate(),
-                            arguments.getBadProb(),
-                            arguments.getGoodProb());
-            burst.applyNoise(llr);
-            burst.statistics();
-            
+            burst.applyNoise(llr);      
     }
-    std::cout << "================================\n" << std::endl; //Abgrenzung
+
  //Vorbereitung auf Decoder (Kantenliste wird berechnet)
     // LLR das während der Iteration verändert wird: extrinsic term
     std::array<float, COLS*SCALE> current_llr = llr;

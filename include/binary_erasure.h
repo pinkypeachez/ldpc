@@ -17,4 +17,5 @@ class BinaryErasure : public INoisyChannel {
              override;
 
         void statistics() override;
+        void getParameter() override;
 };

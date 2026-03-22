@@ -15,6 +15,13 @@ void BinarySymmetric::statistics() {
     
     }
 
+void BinarySymmetric::getParameter() {
+    std::cout << "Binary Symmetric Channel:\n";
+    //std::cout << "[PARAMETER]\n";
+    std::cout << "    Bit Flip Probability: " << flipProb_ << std::endl;
+    std::cout << "\n";
+    }
+
     
 void BinarySymmetric::applyNoise(std::array<float, params::COLS*params::SCALE>& llr){
   static std::default_random_engine generator;

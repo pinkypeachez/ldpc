@@ -7,21 +7,20 @@ using namespace std;
 using namespace params;
 
 void createBaseMatrix(int8_t (&base) [ROWS][COLS], std::mt19937 generator){
-    std::cout << " Base Matrix wird gefüllt...\n " << std::endl;
+    std::cout << "[INFO] BASE MATRIX INITIALISATION" << std::endl;
     FillParityPart(base); //Dual Diagonal Form
     FillMessagePart(base,generator); // CN Degree ist gleich, ausgenommen 0.Zeile (bzw.0-SCALE Zeilen) - Quasi Irregular LDPC
     
-    std::cout << "\n ======= Girth-4 Check wird durchgeführt..." << std::endl;
     bool girthOk = false;
-
+    size_t count = 0;
     while (!girthOk) {
-        std::cout << "Girth-4 Check NICHT bestanden, neuer Versuch..." << std::endl;
+        count++;
+   //     std::cout << "[DEBUG] Girth-4 Check NICHT bestanden, neuer Versuch..." << std::endl;
         FillMessagePart(base, generator);
         girthOk = girthCheck(base);
     }
+    std::cout << "[INFO] Girth-4 Check completed at " << count << " attempt." << std::endl;
 
-    std::cout << "\n\nGirth-4 Check bestanden!" << std::endl;
-    std::cout << "\n ======= Base Matrix ist: " << std::endl;
     for (size_t i = 0; i < ROWS; i++){
         std::cout << " " << std::endl;
         for (size_t j = 0; j < COLS; j++) {
@@ -72,7 +71,7 @@ bool girthCheck ( int8_t (&base) [ROWS][COLS]){
 
                 // ----- Modulo 64 via Bit-Maske !!!!!!!!
                 if (((base[i][j] - base[i+step_r][j]) + (base[i+step_r][j+step_c]-base[i][j+step_c])+64) % 64 == 0) {
-                    cout << "Girth-4: " << +base[i][j] << " " << +base[i+step_r][j] << " " << +base[i+step_r][j+step_c] << " " << +base[i][j+step_c] << endl;
+                    cout << "Failed at Girth-4: " << +base[i][j] << " " << +base[i+step_r][j] << " " << +base[i+step_r][j+step_c] << " " << +base[i][j+step_c] << endl;
                     return false;
                 }
             }

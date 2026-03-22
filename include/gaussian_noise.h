@@ -27,4 +27,5 @@ class GaussianNoise : public INoisyChannel {
              override;
 
         void statistics() override;
+        void getParameter() override;
 };

@@ -18,6 +18,7 @@ class BurstError : public INoisyChannel {
              override;
     
      void statistics() override;
+     void getParameter() override;     
 
 
 

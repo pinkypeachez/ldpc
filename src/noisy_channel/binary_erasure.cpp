@@ -4,13 +4,17 @@
 #include <iostream>
 
 void BinaryErasure::statistics() {
-     //std::cout << "[PARAMETER]\n";
-    // std::cout << "    Erasure Probability: " << erasureProb_ << std::endl;
-     std::cout << "[STATISTICS]\n";
+ std::cout << "[STATISTICS]\n";
      std::cout << "    Number of Erasures: " << numberErasures_ << std::endl;
      std::cout << "\n\n";
     }
 
+void BinaryErasure::getParameter() {
+    std::cout << "Binary Erasure Noise:\n";
+   // std::cout << "[PARAMETER]\n";
+    std::cout << "    Erasure Probability: " << erasureProb_ << std::endl;
+    std::cout << "\n";
+}
     
 void BinaryErasure::applyNoise( 
               std::array<float, params::COLS*params::SCALE>& llr){

@@ -11,6 +11,15 @@ GaussianNoise::GaussianNoise(float snr_db, float a) : a_(a), snr_db_(snr_db)
     ch_rel_ = (2.0f * a_) / (stddev_ * stddev_);
 }
 
+void GaussianNoise::getParameter() {
+     std::cout << "Gaussian Noise:\n";
+     //std::cout << "[PARAMETER]\n";
+     std::cout << "    Signal-To-Noise Ratio (SNR) in dB: " << snr_db_ << std::endl;
+     std::cout << "    Amplitude: " << a_ << std::endl;
+     std::cout << "\n";
+     
+    }
+
 void GaussianNoise::statistics() {
      //std::cout << "[PARAMETER]\n";
     // std::cout << "    Signal-To-Noise Ratio (SNR) in dB: " << snr_db_ << std::endl;
