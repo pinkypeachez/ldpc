@@ -52,8 +52,7 @@ int main(int argc, char* argv[]) {
 
     createBaseMatrix(base, generator);
 
-// ======================================== START:  ======================================== 
-//          "Encoder -> Noisy Channel -> Decoder" Kette in range of "numberOfChunks" 
+// Die Chunks werden durch Encoder - Noisy Channel - Decoder geschoben
     std::cout << "\n\n[INFO] START DISPATCHING THE CHUNKS\n" << std::endl;
     for (size_t chunk = 0; chunk < m.numberOfChunks; chunk++){
         std::cout << "CHUNK #" << chunk << ":\n" << std::endl;
@@ -78,7 +77,7 @@ int main(int argc, char* argv[]) {
                       arguments.getAmplitude());
 
     // 2: Add noise (Binary Symmetric / Gaussian Noise / Binary Erasure )
-    // je nachdem ob als Konsolenargument übergeben (Default: nur Gaussian Noise)
+    // je nachdem ob als Konsolenargument übergeben (Default: nur Gaussian Noise!!!) DOKUMENTIEREN oder besser gar kein noise..?
     if (arguments.isBSCEnabled()){
             bsc.applyNoise(llr);
     }
@@ -93,8 +92,7 @@ int main(int argc, char* argv[]) {
     }
 
  //Vorbereitung auf Decoder (Kantenliste wird berechnet)
-    // LLR das während der Iteration verändert wird: extrinsic term
-    std::array<float, COLS*SCALE> current_llr = llr;
+    std::array<float, COLS*SCALE> current_llr = llr;     // LLR das während der Iteration verändert wird: extrinsic term
     
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base, check_nodes);
@@ -121,26 +119,24 @@ int main(int argc, char* argv[]) {
 
         // CHECK OB DIE LÖSUNG SCHON GEFUNDEN
         HardDecision (current_llr, calc_codeword);
-
-        
+  
         for (size_t cn = 0; cn < check_nodes.size(); cn++) {  
            for (size_t n = 0; n < check_nodes[cn].neighbors.size(); n++){            
                 syndrom[cn] =  syndrom[cn] xor calc_codeword[check_nodes[cn].neighbors[n]];
                 }
             if (syndrom[cn] != 0) {
-                    //std::cout << "Iteration # " << i << std::endl;
-                    std::cout << "Failed in Iteration " << i << std::endl;
+                    std::cout << "Failed in Iteration " << i;
+                    m.hammingDistance(codeword, calc_codeword);
                     parity_failed = true;
                     break;
             }               
         }
 
         if (parity_failed == false) {
-            std::cout << "YAAY! Die Nachricht wurde in der " << i << ". Iteration dekodiert" << std::endl;
-
-                for (size_t i = 0; i < calc_codeword.size(); i++){
+            std::cout << "YAAY! Decoded at " << i << " Iteration" << std::endl;
+               /*  for (size_t i = 0; i < calc_codeword.size(); i++){
                     std::cout << +calc_codeword[i];
-                }               
+                }     */           
                     break;
             } 
 

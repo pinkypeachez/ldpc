@@ -1,8 +1,11 @@
 #include "input_string.h"
 
+
 #include <iostream>
 #include <algorithm>
 #include <cmath>
+#include <bit> // für popcount (hamming Distance)
+
 
 
 void MessageDispatcher::FillChunksWithInput()  {
@@ -31,10 +34,28 @@ void MessageDispatcher::dispatch(const std::string& userInput) {
     std::cout << "[INFO] Total chunks: " << numberOfChunks << "\n" << std::endl;
 }
 
-/* void MessageDispatcher::hammingDistance(std::vector<std::array<uint64_t, 4>>& chunks) {
+ void MessageDispatcher::hammingDistance(const std::array<uint64_t, params::COLS>& codeword, const std::bitset<params::COLS*params::SCALE>& calc_codeword) {
+/*  //ALTE LÖSUNG
+   uint64_t* calcPtr = reinterpret_cast<uint64_t*>(&calc_codeword);
 
-    std::cout << "Hamming Distance" << std::endl;
-} */
+    size_t hammingDistance = 0;
+    for (size_t i = 0; i < codeword.size(); i++){
+        hammingDistance += std::popcount(codeword[i] ^ calcPtr[i]);
+    }
+    std::cout << " (Hamming Distance: " << hammingDistance << ")" << std::endl; */
+
+    // sicherer
+    std::array<uint64_t, params::COLS> calcArray;
+    std::memcpy(calcArray.data(), &calc_codeword, sizeof(calcArray));
+
+    size_t hammingDistance = 0;
+    for (size_t i = 0; i < codeword.size(); i++) {
+        hammingDistance += std::popcount(codeword[i] ^ calcArray[i]);
+    }
+    std::cout << " (Hamming Distance: " << hammingDistance << ")" << std::endl;
+
+} 
+
 /* 
 void MessageDispatcher::printAscii(){
   for (size_t chunk = 0; chunk < ;chunk++){

@@ -1,9 +1,12 @@
 #pragma once
 
+#include "params.h"
+
 #include <string>
 #include <vector>
 #include <array>
 #include <cstdint>
+#include <bitset>
 
 
 /* MessageDispatcher Class
@@ -22,6 +25,6 @@ class MessageDispatcher {
          void dispatch(const std::string& userInput);
          std::vector<std::array<uint64_t, 4>> chunks; // 4 * 64bit = 256bit pro Chunk
          size_t numberOfChunks = 0;
-        // void hammingDistance(std::array<uint64_t, 4>& chunk);
+         void hammingDistance(const std::array<uint64_t, params::COLS>& codeword, const std::bitset<params::COLS*params::SCALE>& calc_codeword);
 
 };
