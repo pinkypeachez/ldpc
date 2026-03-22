@@ -7,7 +7,7 @@
 #include "preprocessing.h"
 #include "encoder.h"
 #include "noisy_channel.h"
-#include "gaussianNoise.h"
+#include "gaussian_noise.h"
 #include "binary_erasure.h"
 #include "binary_symmetric.h"
 #include "burst_error.h"
@@ -38,9 +38,11 @@ int main(int argc, char* argv[]) {
 
     createBaseMatrix(base, generator);
 
-// ============ START: "Encoder -> Noisy Channel -> Decoder" Kette in range of "numberOfChunks" ============ 
+// ======================================== START:  ======================================== 
+//          "Encoder -> Noisy Channel -> Decoder" Kette in range of "numberOfChunks" 
 
     for (size_t chunk = 0; chunk < m.numberOfChunks; chunk++){
+        std::cout << "\n CHUNK #" << chunk << ":\n" << std::endl;
         std::array<uint64_t,COLS-ROWS> message = m.chunks[chunk];
 
 
@@ -64,25 +66,34 @@ int main(int argc, char* argv[]) {
     // 2: Add noise (Binary Symmetric / Gaussian Noise / Binary Erasure )
     // je nachdem ob als Konsolenargument übergeben (Default: nur Gaussian Noise)
     if (arguments.isBSCEnabled()){
+            std::cout << "===== Binary Symmetric Noise Channel ===== " << std::endl;
             BinarySymmetric bsc(arguments.getBSCProb());
             bsc.applyNoise(llr);
+            bsc.statistics();
     }
     if (arguments.isAWGNEnabled()){
+            std::cout << "===== Gaussian Noise Channel ===== " << std::endl;
             GaussianNoise gn(arguments.getSNR(), 
                             arguments.getAmplitude());     //(SNR in dB, a Amplitude) 
             gn.applyNoise(llr); 
+            gn.statistics();
     }
     if (arguments.isErasureEnabled()){
+            std::cout << "===== Binary Erasure Noise Channel ===== " << std::endl;
             BinaryErasure bec (arguments.getBECProb());
             bec.applyNoise(llr); 
+            bec.statistics();
     }
     if (arguments.isBurstEnabled()){
+            std::cout << "===== Burst Noise Channel ===== " << std::endl;
             BurstError burst(arguments.getErrorRate(),
                             arguments.getBadProb(),
                             arguments.getGoodProb());
             burst.applyNoise(llr);
             burst.statistics();
+            
     }
+    std::cout << "================================\n" << std::endl; //Abgrenzung
  //Vorbereitung auf Decoder (Kantenliste wird berechnet)
     // LLR das während der Iteration verändert wird: extrinsic term
     std::array<float, COLS*SCALE> current_llr = llr;
@@ -90,7 +101,7 @@ int main(int argc, char* argv[]) {
     std::vector<CheckNode> check_nodes(ROWS*SCALE);
     FillCNConnections(base, check_nodes);
 
-//Deoder
+//Decoder
     size_t iterate = 50;
     std::bitset<COLS*SCALE> calc_codeword;
     std::array<int,ROWS*SCALE> syndrom = {};
@@ -114,17 +125,13 @@ int main(int argc, char* argv[]) {
         HardDecision (current_llr, calc_codeword);
 
         
-        for (size_t cn = 0; cn < check_nodes.size(); cn++) {
-           
-           for (size_t n = 0; n < check_nodes[cn].neighbors.size(); n++){
-            
+        for (size_t cn = 0; cn < check_nodes.size(); cn++) {  
+           for (size_t n = 0; n < check_nodes[cn].neighbors.size(); n++){            
                 syndrom[cn] =  syndrom[cn] xor calc_codeword[check_nodes[cn].neighbors[n]];
-
                 }
-
             if (syndrom[cn] != 0) {
                     //std::cout << "Iteration # " << i << std::endl;
-                    //std::cout << "Failed! " << std::endl;
+                    std::cout << "Failed in Iteration " << i << std::endl;
                     parity_failed = true;
                     break;
             }               

@@ -1,11 +1,18 @@
 #include "binary_symmetric.h"
 
 #include <random>
+#include <iostream>
 
 BinarySymmetric::BinarySymmetric(float flipProb) : flipProb_(flipProb) {}
 
 void BinarySymmetric::statistics() {
-     
+ 
+     //std::cout << "[PARAMETER]\n";
+    // std::cout << "    Bit Flip Probability: " << flipProb_ << std::endl;
+     std::cout << "[STATISTICS]\n";
+     std::cout << "    Number of Bit Flips: " << numberFlips_ << std::endl;
+     std::cout << "\n\n";
+    
     }
 
     
@@ -17,6 +24,7 @@ void BinarySymmetric::applyNoise(std::array<float, params::COLS*params::SCALE>& 
   for (size_t i = 0; i < llr.size(); i++){
     if (distribution(generator) == 1) {
         llr[i] *= (-1);
+        numberFlips_++;
     }
   }
 

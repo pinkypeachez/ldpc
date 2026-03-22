@@ -8,6 +8,7 @@
 class BinaryErasure : public INoisyChannel {
     private: 
       float erasureProb_;
+      int numberErasures_ = 0;
 
     public:
         BinaryErasure(float erasureProb): erasureProb_(erasureProb) {};

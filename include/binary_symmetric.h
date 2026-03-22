@@ -5,7 +5,8 @@
 
 class BinarySymmetric : public INoisyChannel {
     private:
-      float flipProb_;
+      float flipProb_ = 0.0f;
+      size_t numberFlips_ = 0;
 
     public:
         BinarySymmetric(float flipProb); //Konstruktor

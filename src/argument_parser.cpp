@@ -36,6 +36,7 @@ void ArgumentParser::parse(){
 
         }else if 
           (strcmp( argv_[i], "--awgn") == 0 && (i + 2 < argc_)){
+            gaussian_ = true;
             std::cout << "Gaussian Noise:" << std::endl;
           
                 try {
@@ -62,6 +63,7 @@ void ArgumentParser::parse(){
                std::exit(EXIT_SUCCESS);
 
         } else if (strcmp( argv_[i], "--bsc") == 0 && (i + 1 < argc_)){
+                bsc_ = true;
                 std::cout << "Binary Symetric:" << std::endl;
           
                 try {
@@ -79,6 +81,7 @@ void ArgumentParser::parse(){
         }
           std::cout << "Bit Flip Probability  = " << p_bsc_ << std::endl;
       } else if (strcmp( argv_[i], "--bec") == 0 && (i + 1 < argc_)){
+        erasure_ = true;
         std::cout << "Binary Erasure:" << std::endl;
           
                 try {
@@ -98,7 +101,8 @@ void ArgumentParser::parse(){
 
       //--burst <e> <b> <g>   Gilbert-Elliott Burst Error Model
       else if (strcmp( argv_[i], "--burst") == 0 && (i + 3 < argc_)){ 
-        std::cout << "Gilbert-Elliott Burst Error:" << std::endl;
+        burst_ = true;
+        //std::cout << "Gilbert-Elliott Burst Error:" << std::endl;
 
                   // Wahrscheinlichkeit für den Erasure in BAD State
                   const std::string burstMsg = "ERROR: --burst <e> <b> <g>\n"

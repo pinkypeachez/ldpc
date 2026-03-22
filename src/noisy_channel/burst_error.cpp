@@ -7,8 +7,13 @@ BurstError::BurstError(float errorRateBurst, float badProb, float goodProb)
   : errorRateBurst_(errorRateBurst), badProb_(badProb), goodProb_(goodProb) {}
 
 void BurstError::statistics() {
-     std::cout << "Anzahl Bursts: " << numberBursts << std::endl;
-     std::cout << "Mit Längen: " << std::endl;
+    // std::cout << "[PARAMETER]\n";
+    // std::cout << "    Erasure Probability in a BAD State: " << errorRateBurst_ << std::endl;
+    // std::cout << "    Probability GOOD --> BAD: " << badProb_ << std::endl;
+    // std::cout << "    Probability BAD --> GOOD: " << goodProb_ << std::endl;
+     std::cout << "[STATISTICS]\n";
+     std::cout << "    Number of Bursts: " << numberBursts << std::endl;
+     std::cout << "    With Length: ";
      for (size_t i = 0; i < burstLength.size();i++){
         std::cout << burstLength[i] << " ";
      }

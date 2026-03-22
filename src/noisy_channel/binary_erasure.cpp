@@ -4,7 +4,11 @@
 #include <iostream>
 
 void BinaryErasure::statistics() {
-     
+     //std::cout << "[PARAMETER]\n";
+    // std::cout << "    Erasure Probability: " << erasureProb_ << std::endl;
+     std::cout << "[STATISTICS]\n";
+     std::cout << "    Number of Erasures: " << numberErasures_ << std::endl;
+     std::cout << "\n\n";
     }
 
     
@@ -18,6 +22,7 @@ void BinaryErasure::applyNoise(
   for (size_t i = 0; i < llr.size(); i++){
         if (distribution(generator) == 1){
             llr[i] = 0;
+            numberErasures_++;
         } 
 
   } 

@@ -22,6 +22,6 @@ class MessageDispatcher {
          void dispatch(const std::string& userInput);
          std::vector<std::array<uint64_t, 4>> chunks; // 4 * 64bit = 256bit pro Chunk
          size_t numberOfChunks = 0;
-         void hammingDistance(std::vector<std::array<uint64_t, 4>>& chunks);
+        // void hammingDistance(std::array<uint64_t, 4>& chunk);
 
 };

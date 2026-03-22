@@ -14,7 +14,7 @@ target_sources(ldpc PRIVATE
     src/preprocessing.cpp
     src/encoder.cpp 
     src/noisy_channel/noisy_channel.cpp
-    src/noisy_channel/gaussianNoise.cpp
+    src/noisy_channel/gaussian_noise.cpp
     src/noisy_channel/binary_erasure.cpp
     src/noisy_channel/binary_symmetric.cpp
     src/noisy_channel/burst_error.cpp

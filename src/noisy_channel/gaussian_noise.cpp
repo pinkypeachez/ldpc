@@ -1,4 +1,4 @@
-#include "gaussianNoise.h"  
+#include "gaussian_noise.h"  
 
 #include <bitset>
 #include <random>
@@ -12,6 +12,13 @@ GaussianNoise::GaussianNoise(float snr_db, float a) : a_(a), snr_db_(snr_db)
 }
 
 void GaussianNoise::statistics() {
+     //std::cout << "[PARAMETER]\n";
+    // std::cout << "    Signal-To-Noise Ratio (SNR) in dB: " << snr_db_ << std::endl;
+     //std::cout << "    Amplitude: " << a_ << std::endl;
+     std::cout << "[STATISTICS]\n";
+     std::cout << "    Standarddeviation: " << stddev_ << std::endl;
+     std::cout << "    Mean: 0" << std::endl;
+     std::cout << "\n";
      
     }
 

@@ -31,10 +31,10 @@ void MessageDispatcher::dispatch(const std::string& userInput) {
     std::cout << numberOfChunks << " Chunks are being dispatched..." << std::endl;
 }
 
-void MessageDispatcher::hammingDistance(std::vector<std::array<uint64_t, 4>>& chunks) {
+/* void MessageDispatcher::hammingDistance(std::vector<std::array<uint64_t, 4>>& chunks) {
 
     std::cout << "Hamming Distance" << std::endl;
-}
+} */
 /* 
 void MessageDispatcher::printAscii(){
   for (size_t chunk = 0; chunk < ;chunk++){
