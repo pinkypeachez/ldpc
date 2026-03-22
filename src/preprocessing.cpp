@@ -6,6 +6,30 @@
 using namespace std;
 using namespace params;
 
+void createBaseMatrix(int8_t (&base) [ROWS][COLS], std::mt19937 generator){
+    std::cout << " Base Matrix wird gefüllt...\n " << std::endl;
+    FillParityPart(base); //Dual Diagonal Form
+    FillMessagePart(base,generator); // CN Degree ist gleich, ausgenommen 0.Zeile (bzw.0-SCALE Zeilen) - Quasi Irregular LDPC
+    
+    std::cout << "\n ======= Girth-4 Check wird durchgeführt..." << std::endl;
+    bool girthOk = false;
+
+    while (!girthOk) {
+        std::cout << "Girth-4 Check NICHT bestanden, neuer Versuch..." << std::endl;
+        FillMessagePart(base, generator);
+        girthOk = girthCheck(base);
+    }
+
+    std::cout << "\n\nGirth-4 Check bestanden!" << std::endl;
+    std::cout << "\n ======= Base Matrix ist: " << std::endl;
+    for (size_t i = 0; i < ROWS; i++){
+        std::cout << " " << std::endl;
+        for (size_t j = 0; j < COLS; j++) {
+            std::cout << +base[i][j] << " ";     
+        }
+    } 
+}
+
 void FillParityPart (int8_t (&base)[ROWS][COLS]){
 
 // Rechter Teil der Base Matrix (Dual Diagonal Form) wird gefüllt

@@ -1,7 +1,8 @@
 #include "encoder.h"
+
+#include <bit>
 #include <iostream>
 #include <bitset>
-#include <bit>
 #include <array>
 
 using namespace params;
@@ -28,31 +29,4 @@ void ComputeParity (const int8_t (&base)[ROWS][COLS], const std::array<uint64_t,
         }
         parity[row] = xor_sum;
     }
-}
-
-
-// Check ob Encoder funktioniert
-bool CheckCodeword(const int8_t (&base)[ROWS][COLS], const std::array<uint64_t, COLS>& codeword){
-    for (size_t row = 0; row < ROWS; row++) {
-
-        uint64_t acc = 0;
-
-        for (size_t col = 0; col < COLS; col++) {
-
-            if (base[row][col] >= 0) {
-
-                uint64_t rotated =
-                    std::rotr(codeword[col], base[row][col]);
-
-                acc ^= rotated;
-            }
-        }
-
-        if (acc != 0) {
-            std::cout << "Problem bei Parity Check in Row: " << row << std::endl;
-            return false;
-        }
-    }
-
-    return true;
 }

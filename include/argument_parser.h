@@ -29,11 +29,29 @@ private:
     float badProb_ = 0.01f;
     float goodProb_ = 0.1f;
 
+    //Ob Noise Modelle beim start augewählt wurden
+    bool bsc_ = 0;
+    bool gaussian_ = 1; //Gaussian per Default immer enabled KORREKTUR????
+    bool erasure_ = 0;
+    bool burst_ = 0;
+
 public:
     ArgumentParser(int argc, char* argv[]);
     
     void parse();
 
+
     // Getter für main
     const std::string& getInput() const { return input_; }
+    float getAmplitude() const { return a_; }
+    float getSNR() const { return snr_; }
+    float getBSCProb() const { return p_bsc_; }
+    float getBECProb() const { return p_bec_; }
+    float getErrorRate() const { return errorRateBurst_; }
+    float getBadProb() const { return badProb_; }
+    float getGoodProb() const { return goodProb_; }
+    bool isBSCEnabled() const { return bsc_; } 
+    bool isAWGNEnabled() const { return gaussian_; } 
+    bool isErasureEnabled() const { return erasure_; } 
+    bool isBurstEnabled() const { return burst_; } 
 };
