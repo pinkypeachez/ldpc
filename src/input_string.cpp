@@ -28,13 +28,23 @@ void MessageDispatcher::FillChunksWithInput()  {
 
         }
 
+void MessageDispatcher::randomFill(std::mt19937_64 & generator, std::uniform_int_distribution<uint64_t> &distribution){
+    chunks.resize(numberOfChunks); 
+    for (size_t batch = 0; batch < numberOfChunks; batch++){
+       for (size_t i = 0; i < 4; i ++){ //4 64bit Elemente passen in "Message" Batch
+               chunks[batch][i] = distribution(generator);
+        }  
+    }
+    
+}
+
 void MessageDispatcher::dispatch(const std::string& userInput) {
     inputBuffer_ = userInput; 
     FillChunksWithInput(); 
     std::cout << "[INFO] Total chunks: " << numberOfChunks << "\n" << std::endl;
 }
 
- void MessageDispatcher::hammingDistance(const std::array<uint64_t, params::COLS>& codeword, const std::bitset<params::COLS*params::SCALE>& calc_codeword) {
+ size_t MessageDispatcher::hammingDistance(const std::array<uint64_t, params::COLS>& codeword, const std::bitset<params::COLS*params::SCALE>& calc_codeword) {
 /*  //ALTE LÖSUNG
    uint64_t* calcPtr = reinterpret_cast<uint64_t*>(&calc_codeword);
 
@@ -52,7 +62,10 @@ void MessageDispatcher::dispatch(const std::string& userInput) {
     for (size_t i = 0; i < codeword.size(); i++) {
         hammingDistance += std::popcount(codeword[i] ^ calcArray[i]); //xorren und anzahl bit-differenzen zählen --> hamming distance
     }
+
     std::cout << " (Hamming Distance: " << hammingDistance << ")" << std::endl;
+
+    return hammingDistance;
 
 }
 

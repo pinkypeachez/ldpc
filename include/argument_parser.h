@@ -16,7 +16,9 @@ private:
 
     //String Input
     std::string input_ = "It's BMW, not 'B M Double You', Bayerische Motorenwerke. Wait what? BAYERISCHE MOTORENWERKE!!!!!!";
-    
+    size_t chunk_ = 0; //Anzahl Chunks
+    // Wenn chunks_ != 0 --> erzeuge zufällige chunks (und zwar "chunks_"-Stück)
+
     // Gaussian Noise
     float snr_ = 5.0f;
     int a_ = 1;
@@ -37,12 +39,14 @@ private:
 
 public:
     ArgumentParser(int argc, char* argv[]);
+    bool randomMessage = false;
     
     void parse();
 
 
     // Getter für main
     const std::string& getInput() const { return input_; }
+    size_t getNumberChunks() const { return chunk_; }
     float getAmplitude() const { return a_; }
     float getSNR() const { return snr_; }
     float getBSCProb() const { return p_bsc_; }

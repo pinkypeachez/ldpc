@@ -2,6 +2,7 @@
 #include <random>
 #include <cmath> // fürs aufrunden
 #include <string> // um teile vom string zu nehmen
+#include <fstream> // für simulation, ergebnisse zu schreiben
 
 #include "argument_parser.h"
 #include "preprocessing.h"
@@ -24,9 +25,24 @@ int main(int argc, char* argv[]) {
     ArgumentParser arguments(argc, argv);
     arguments.parse();
 
+// Zufallszahlgenerator   
+    std::random_device rd;
+    std::mt19937_64 generator( rd() );
+
 // Input-String (oder Default-String) wird in Chunks aufgeteilt
+// aber wenn kein Input string - generiere zufällige Message
+
     MessageDispatcher m;
-    m.dispatch(arguments.getInput());
+    if (arguments.randomMessage == false){
+        m.dispatch(arguments.getInput());
+    } else {
+        std::uniform_int_distribution<uint64_t> distribution(
+         0, std::numeric_limits<uint64_t>::max());
+        m.numberOfChunks = arguments.getNumberChunks();
+        m.randomFill(generator,distribution);
+    }
+
+
 
 // ALLE Noise Channels werden initialisiert, auch die, die später nicht benutzt werden
 // (ich habe keine Zeit es schlauer zu lösen sry!!)
@@ -42,15 +58,12 @@ int main(int argc, char* argv[]) {
     if (arguments.isErasureEnabled()) bec.getParameter();
     if (arguments.isBurstEnabled()) burst.getParameter();
 
-
 // Preprocessing: BaseMatrix wird erstellt   
-    std::random_device rd;
-    uint seed = rd();
-    std::mt19937 generator {seed};
-
     int8_t base[ROWS][COLS] = {};
 
     createBaseMatrix(base, generator);
+
+    size_t hammingTotal = 0;
 
 // Die Chunks werden durch Encoder - Noisy Channel - Decoder geschoben
     std::cout << "\n\n[INFO] START DISPATCHING THE CHUNKS\n" << std::endl;
@@ -103,6 +116,8 @@ int main(int argc, char* argv[]) {
     std::array<int,ROWS*SCALE> syndrom = {};
     bool parity_failed;
 
+    
+
     for (size_t i = 0; i < iterate; i++) {
 
         syndrom.fill(0); //neuer Versuch, neues Glück..
@@ -135,6 +150,7 @@ int main(int argc, char* argv[]) {
                     if (i == iterate){
                         std::cout << "The message couldnt be decoded. Please increase the number of iterations or try a different noise model" << std::endl;
                         m.toAscii (calc_codeword, !parity_failed); //auch wenn nicht geklappt, die letzte version hinzufügen
+                        hammingTotal += m.hammingDistance(codeword, calc_codeword);
                     }
                     break;
             }               
@@ -143,18 +159,18 @@ int main(int argc, char* argv[]) {
         if (parity_failed == false) {
             std::cout << "YAAY! Decoded in the " << i << ". Iteration: ";   
             m.toAscii (calc_codeword, parity_failed); 
+            hammingTotal += m.hammingDistance(codeword, calc_codeword);
+            
             break;
             } 
 
 
     }
-
-
-std::cout << std::endl;
-
     }
-    std::cout << "[INFO] Decoded message: " << std::endl;
+    std::cout << "\n[INFO] Decoded message: " << std::endl;
     std::cout << m.getDecoded() << std::endl;
+
+    std::cout << "HAMMING TOTAL: " << hammingTotal << std::endl;
 
 
     return 0;

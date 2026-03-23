@@ -54,7 +54,7 @@ void GaussianNoise::applyNoise( std::array<float, params::COLS*params::SCALE>& l
                 
     // -----------------  Recieved signal (aka add gaussian noise to transmitted vector)
 
-    static std::default_random_engine generator;
+    static std::mt19937_64 generator(std::random_device{}());
     std::normal_distribution<float> distribution(0.0,stddev_);
     
     for (size_t i = 0; i<llr.size(); i++){

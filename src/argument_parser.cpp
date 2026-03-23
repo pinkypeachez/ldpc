@@ -8,7 +8,9 @@ ArgumentParser::ArgumentParser (int argc, char* argv[])
 void ArgumentParser::showHelpAndExit(){
   std::cout << "Usage: ./ldpc [PARAMETERS]\n\n"
               << "Parameters:\n"
-              << "  --input <string>      Set the input message to be encoded\n"
+              << "  --input [msg <string> | simulate <int>]   \n"
+              << "           msg <string>        Start with a custom input string (Recommended)\n"
+              << "           simulate <int>      Start with <int>-number of chunks (randomly filled)\n"
               << "  --bsc <p>             Binary Symmetric Channel. (Default: 0.1)\n"
               << "                        <p>: Bit-flip probability [0.0 - 1.0]\n\n"
               << "  --awgn <snr> <a>    Additive White Gaussian Noise.\n"
@@ -31,8 +33,14 @@ void ArgumentParser::parse(){
         if (strcmp( argv_[i], "--help") == 0) {
             showHelpAndExit();
         } else if (strcmp( argv_[i], "--input")==0) {
-            this->input_ = argv_[++i];
+          if (strcmp( argv_[i+1], "msg") ==0  ){
+            this->input_ = argv_[i+2];
             std::cout << "[INFO] Message: " << input_ << "\n" << std::endl;
+          } else if (strcmp( argv_[i+1], "simulate") ==0  ) {
+            this->chunk_ = std::stoi(argv_[i+2]);
+            randomMessage = true; //message soll random gefüllt werden (für simulation)
+
+          }
 
         }else if 
           (strcmp( argv_[i], "--awgn") == 0 && (i + 2 < argc_)){
@@ -59,7 +67,6 @@ void ArgumentParser::parse(){
 
             
 
-               std::exit(EXIT_SUCCESS);
 
         } else if (strcmp( argv_[i], "--bsc") == 0 && (i + 1 < argc_)){
                 bsc_ = true;

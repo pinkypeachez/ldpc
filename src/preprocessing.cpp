@@ -6,7 +6,7 @@
 using namespace std;
 using namespace params;
 
-void createBaseMatrix(int8_t (&base) [ROWS][COLS], std::mt19937 generator){
+void createBaseMatrix(int8_t (&base) [ROWS][COLS], std::mt19937_64& generator){
     std::cout << "[INFO] BASE MATRIX INITIALISATION" << std::endl;
     FillParityPart(base); //Dual Diagonal Form
     FillMessagePart(base,generator); // CN Degree ist gleich, ausgenommen 0.Zeile (bzw.0-SCALE Zeilen) - Quasi Irregular LDPC
@@ -44,7 +44,7 @@ void FillParityPart (int8_t (&base)[ROWS][COLS]){
     
 };
 
-void FillMessagePart (int8_t (&base)[ROWS][COLS], std::mt19937 &generator){
+void FillMessagePart (int8_t (&base)[ROWS][COLS], std::mt19937_64 &generator){
   // Linker Teil der Base Matrix (message bits) wird mit zufälligen Shift Werten gefüllt
   // Es werden Shift Werte zwischen 0 und 63 (für SCALE = 64) verteilt
     std::uniform_int_distribution<int> distribution(0,SCALE-1);
