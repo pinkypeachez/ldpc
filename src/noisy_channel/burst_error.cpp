@@ -16,10 +16,6 @@ void BurstError::getParameter() {
     }
 
 void BurstError::statistics() {
-    // std::cout << "[PARAMETER]\n";
-    // std::cout << "    Erasure Probability in a BAD State: " << errorRateBurst_ << std::endl;
-    // std::cout << "    Probability GOOD --> BAD: " << badProb_ << std::endl;
-    // std::cout << "    Probability BAD --> GOOD: " << goodProb_ << std::endl;
      std::cout << "[STATISTICS]\n";
      std::cout << "    Number of Bursts: " << numberBursts << std::endl;
      std::cout << "    With Length: ";
@@ -39,7 +35,7 @@ void BurstError::applyNoise( std::array<float, params::COLS*params::SCALE>& llr)
   size_t lengthCount = 0;
 
   for (size_t i = 0; i < llr.size(); i++){
-    //std::cout << " ===== " << std::endl; //debugging das steht für nächstes i
+
      
      if (state_ == 1){ //Wenn im Good State:
         llr[i] = llr[i];// ist bestimmt DUMM. man kanns weglassen, LLR bleibt so wie er 

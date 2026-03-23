@@ -31,9 +31,9 @@ private:
     float badProb_ = 0.01f;
     float goodProb_ = 0.1f;
 
-    //Ob Noise Modelle beim start augewählt wurden
+    //Ob Noise Modelle beim start augewählt wurden: DEFAULT kein noise!!!! 
     bool bsc_ = 0;
-    bool gaussian_ = 1; //Gaussian per Default immer enabled KORREKTUR????
+    bool gaussian_ = 0; 
     bool erasure_ = 0;
     bool burst_ = 0;
 

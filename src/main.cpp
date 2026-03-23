@@ -41,6 +41,8 @@ int main(int argc, char* argv[]) {
         m.numberOfChunks = arguments.getNumberChunks();
         m.randomFill(generator,distribution);
     }
+/*     std::ofstream logFile("simulation_results.csv");
+    logFile << "SNR;HammingDistance" << std::endl; */
 
 
 
@@ -147,7 +149,7 @@ int main(int argc, char* argv[]) {
                    //m.toAscii (calc_codeword, parity_failed);
                     //ACHTUNG!!!!! HAMMING DISTANZ WIRD AUF DAS GANZE WORT ANGEWENDET AUSGEGEBEN!
                     //toAscii gibt jedoch message teil aus
-                    if (i == iterate){
+                    if (i == iterate-1){
                         std::cout << "The message couldnt be decoded. Please increase the number of iterations or try a different noise model" << std::endl;
                         m.toAscii (calc_codeword, !parity_failed); //auch wenn nicht geklappt, die letzte version hinzufügen
                         hammingTotal += m.hammingDistance(codeword, calc_codeword);
@@ -171,7 +173,7 @@ int main(int argc, char* argv[]) {
     std::cout << m.getDecoded() << std::endl;
 
     std::cout << "HAMMING TOTAL: " << hammingTotal << std::endl;
-
+   // logFile << arguments.getSNR() << ";" << hammingTotal << std::endl;
 
     return 0;
 }
