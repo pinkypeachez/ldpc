@@ -55,7 +55,7 @@ int main(int argc, char* argv[]) {
 // Die Chunks werden durch Encoder - Noisy Channel - Decoder geschoben
     std::cout << "\n\n[INFO] START DISPATCHING THE CHUNKS\n" << std::endl;
     for (size_t chunk = 0; chunk < m.numberOfChunks; chunk++){
-        std::cout << "CHUNK #" << chunk << ":\n" << std::endl;
+        std::cout << "[INFO] CHUNK #" << chunk << ":\n" << std::endl;
         std::array<uint64_t,COLS-ROWS> message = m.chunks[chunk];
 
 
@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
     FillCNConnections(base, check_nodes);
 
 //Decoder
-    size_t iterate = 50;
+    size_t iterate = 100;
     std::bitset<COLS*SCALE> calc_codeword;
     std::array<int,ROWS*SCALE> syndrom = {};
     bool parity_failed;
@@ -128,47 +128,33 @@ int main(int argc, char* argv[]) {
                     std::cout << "Failed in Iteration " << i;
                     m.hammingDistance(codeword, calc_codeword);
                     parity_failed = true;
+                   // LIEBER IN DEBUG FILE
+                   //m.toAscii (calc_codeword, parity_failed);
+                    //ACHTUNG!!!!! HAMMING DISTANZ WIRD AUF DAS GANZE WORT ANGEWENDET AUSGEGEBEN!
+                    //toAscii gibt jedoch message teil aus
+                    if (i == iterate){
+                        std::cout << "The message couldnt be decoded. Please increase the number of iterations or try a different noise model" << std::endl;
+                        m.toAscii (calc_codeword, !parity_failed); //auch wenn nicht geklappt, die letzte version hinzufügen
+                    }
                     break;
             }               
         }
 
         if (parity_failed == false) {
-            std::cout << "YAAY! Decoded at " << i << " Iteration" << std::endl;
-               /*  for (size_t i = 0; i < calc_codeword.size(); i++){
-                    std::cout << +calc_codeword[i];
-                }     */           
-                    break;
+            std::cout << "YAAY! Decoded in the " << i << ". Iteration: ";   
+            m.toAscii (calc_codeword, parity_failed); 
+            break;
             } 
 
+
     }
 
-// MESSAGEDISPATCHER HAMMING DISTANZ BERECHNEN!!
-// wenns userinput, gebe die nachricht wieder als ascii (calc_codeword ist ein bitset!!)
-std::cout << "\n\n Rekonstruierte Nachricht: " << std::endl;
 
-for (size_t i = 0; i < 4; i++) { // da message 256 Bit ist und aus 64bit Elementen besteht 256/64=4 
-    std::bitset<64> chunk;
-
-    for (size_t bitIndex = 0; bitIndex < 64; bitIndex++) {
-        if (calc_codeword[i * 64 + bitIndex]) {
-            chunk.set(bitIndex); // bit an Position bitIndex auf 1 setzen
-        }
-    }
-
-    // 64 Bits in eine Zahl umwandeln
-    uint64_t rawData = chunk.to_ullong(); 
-
-    // ascii Zeichen ausgeben
-    uint8_t* bytePtr = reinterpret_cast<uint8_t*>(&rawData);
-    for (size_t b = 0; b < 8; b++) {
-        if (bytePtr[b] != 0) {
-            std::cout << static_cast<char>(bytePtr[b]);
-        }
-    }
-}
 std::cout << std::endl;
 
     }
+    std::cout << "[INFO] Decoded message: " << std::endl;
+    std::cout << m.getDecoded() << std::endl;
 
 
     return 0;
