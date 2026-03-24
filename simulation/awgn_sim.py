@@ -1,6 +1,6 @@
 import subprocess
 
-PROGRAM = "./build/ldpc" 
+PROGRAM = "../build/ldpc" 
 SNRS = [round(x * 0.5, 1) for x in range(2, 21)] 
 CHUNKS = 10000 # 10000 Chunks werden geschickt
 numberBits = CHUNKS * 512
@@ -23,3 +23,4 @@ with open("results_awgn.csv", "w") as f:
                 print(f"{snr};{total_hamming};{total_hamming/numberBits}")
                 f.write(f"{snr};{total_hamming};{total_hamming/numberBits}\n")
                 f.flush() 
+

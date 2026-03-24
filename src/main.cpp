@@ -113,7 +113,7 @@ int main(int argc, char* argv[]) {
     FillCNConnections(base, check_nodes);
 
 //Decoder
-    size_t iterate = 100;
+    size_t iterate = 50;
     std::bitset<COLS*SCALE> calc_codeword;
     std::array<int,ROWS*SCALE> syndrom = {};
     bool parity_failed;

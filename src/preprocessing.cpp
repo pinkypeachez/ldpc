@@ -67,9 +67,7 @@ bool girthCheck ( int8_t (&base) [ROWS][COLS]){
         for ( size_t i = 0; i < ROWS - step_r; i++ ){
             for (size_t j = 0; j < COLS - step_c; j++){
               if (base[i][j] != -1 and base[i+step_r][j] != -1 and base[i][j+step_c] != -1 and base[i+step_r][j+step_c] != -1){
-                // das mit Modulo 64 dokumentieren, z:B wieso denn "+64"?
 
-                // ----- Modulo 64 via Bit-Maske !!!!!!!!
                 if (((base[i][j] - base[i+step_r][j]) + (base[i+step_r][j+step_c]-base[i][j+step_c])+64) % 64 == 0) {
                     cout << "Failed at Girth-4: " << +base[i][j] << " " << +base[i+step_r][j] << " " << +base[i+step_r][j+step_c] << " " << +base[i][j+step_c] << endl;
                     return false;
